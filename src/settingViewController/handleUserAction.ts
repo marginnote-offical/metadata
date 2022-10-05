@@ -29,7 +29,6 @@ async function tableViewDidSelectRowAtIndexPath(
       if (sec.key === "magicaction")
         postNotification(Addon.key + "ButtonClick", {
           row,
-          type: "card"
         })
   }
 }

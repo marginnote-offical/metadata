@@ -7,11 +7,13 @@ const defaultGlobalProfile = {
     panelPosition: [0],
     panelHeight: [1],
     autoBackup: false,
-    backupID: ""
+    backupID: "",
+    showMetaData: true
   },
-  magicaction: {
-    rest: []
+  zotero: {
+    test: false
   },
+  magicaction: {},
   additional: {
     lastVision: Addon.version
   }
@@ -20,7 +22,8 @@ const defaultGlobalProfile = {
 // Each document has a independent profile
 const defaultDocProfile = {
   addon: {
-    rest: []
+    rest: [],
+    pageOffset: "0"
   }
 }
 

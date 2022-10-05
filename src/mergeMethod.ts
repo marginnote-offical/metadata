@@ -1,11 +1,11 @@
 import lang from "./lang"
 import { showHUD } from "./sdk"
 import { modules, constModules } from "./modules"
-import { ICheckMethod, IActionMethod4Text, IActionMethod4Card } from "./typings"
+import { ICheckMethod, IActionMethod } from "./typings"
 import { IAllProfile } from "./profile"
 export type ModuleKeyType = Exclude<keyof IAllProfile, "additional"> | "more"
 
-export const { actions4card, actions4text, checkers } = Object.values({
+export const { actions, checkers } = Object.values({
   ...constModules,
   ...modules
 }).reduce(
@@ -16,16 +16,9 @@ export const { actions4card, actions4text, checkers } = Object.values({
           acc.checkers[k.key] = k["check"]!
         }
       })
-    module.actions4card?.length &&
-      module.actions4card.forEach(k => {
-        acc.actions4card[k.key] = k.method
-        if ("check" in k) {
-          acc.checkers[k.key] = k["check"]!
-        }
-      })
-    module.actions4text?.length &&
-      module.actions4text.forEach(k => {
-        acc.actions4text[k.key] = k.method
+    module.actions?.length &&
+      module.actions.forEach(k => {
+        acc.actions[k.key] = k.method
         if ("check" in k) {
           acc.checkers[k.key] = k["check"]!
         }
@@ -33,8 +26,7 @@ export const { actions4card, actions4text, checkers } = Object.values({
     return acc
   },
   {
-    actions4card: {} as Record<string, IActionMethod4Card>,
-    actions4text: {} as Record<string, IActionMethod4Text>,
+    actions: {} as Record<string, IActionMethod>,
     checkers: {} as Record<string, ICheckMethod>
   }
 )

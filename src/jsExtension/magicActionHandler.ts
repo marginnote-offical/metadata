@@ -1,21 +1,17 @@
 import lang from "~/lang"
 import { PanelControl } from "~/modules/addon/typings"
-import { checkInputCorrect, actions4card } from "~/mergeMethod"
+import { checkInputCorrect, actions } from "~/mergeMethod"
 import { IRowButton, MbBookNote } from "~/typings"
 import { CellViewType, UIAlertViewStyle } from "~/enum"
 import { getMNLinkValue, manageProfileAction } from "~/profile"
 import {
-  MN,
   showHUD,
-  HUDController,
   getSelectNodes,
-  getNodeTree,
-  undoGroupingWithRefresh,
   popup
 } from "~/sdk"
 import { closePanel } from "./switchPanel"
 
-export default async (type: "card" | "text", row: IRowButton) => {
+export default async (row: IRowButton) => {
   switch (row.type) {
     case CellViewType.ButtonWithInput:
       while (1) {
@@ -37,7 +33,6 @@ export default async (type: "card" | "text", row: IRowButton) => {
         // Allowed to be empty
         if (text === "" || (text && (await checkInputCorrect(text, row.key)))) {
           await handleMagicAction({
-            type,
             key: row.key,
             option,
             content: text
@@ -59,7 +54,6 @@ export default async (type: "card" | "text", row: IRowButton) => {
       )
       if (option === -1) return
       await handleMagicAction({
-        type,
         key: row.key,
         option
       })
@@ -67,19 +61,16 @@ export default async (type: "card" | "text", row: IRowButton) => {
 }
 
 const handleMagicAction = async ({
-  type,
   key,
   option,
   content = ""
 }: {
-  type: "card" | "text"
   key: string
   option: number
   content?: string
 }) => {
   try {
     let nodes: MbBookNote[] = []
-    key != "filterCard" &&
       self.globalProfile.addon.panelControl.includes(
         PanelControl.CompleteClose
       ) &&
@@ -97,35 +88,10 @@ const handleMagicAction = async ({
       }
       return
     } else {
-      if (!nodes.length) {
-        showHUD(lang.not_select_card)
-        return
-      }
-      // The need for the same level is to avoid the situation where both parent and descendant nodes are selected,
-      // which leads to duplicate processing.
-      const isHavingChildren = nodes.every(
-        node =>
-          nodes[0].parentNote === node.parentNote && node?.childNotes?.length
-      )
-    }
-    switch (key) {
-      default:
-        // Promise can not be placed in undoGroupingWithRefresh()
-        if (actions4card[key] instanceof Promise)
-          actions4card[key]({
+          actions[key]({
             content,
-            nodes,
             option
           })
-        else
-          undoGroupingWithRefresh(
-            () =>
-              void actions4card[key]({
-                content,
-                nodes,
-                option
-              })
-          )
     }
   } catch (err) {
     console.error(String(err))

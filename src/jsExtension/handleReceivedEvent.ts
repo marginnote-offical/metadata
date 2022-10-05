@@ -20,8 +20,8 @@ const onButtonClick: EventHandler = async sender => {
   if (!isThisWindow(sender)) return
   // For magicaction
   console.log("Click a button", "event")
-  const { row, type } = sender.userInfo
-  handleMagicAction(type, row)
+  const { row } = sender.userInfo
+  handleMagicAction(row)
 }
 
 const onSwitchChange: EventHandler = async sender => {
@@ -49,8 +49,16 @@ const onSelectChange: EventHandler = async sender => {
 const onInputOver: EventHandler = async sender => {
   if (!isThisWindow(sender)) return
   console.log("Input", "event")
-  const { name, key, content } = sender.userInfo
+  const { name, key } = sender.userInfo
+  let { content } = sender.userInfo
   showHUD(content ? lang.input_saved : lang.input_clear)
+  switch (key) {
+    case "pageOffset": {
+      const [a, b] = content.split(/\s*-\s*/).map(k => Number(k))
+      content = b === undefined ? content : String(a - b)
+      break
+    }
+  }
   await saveProfile(name, key, content)
 }
 

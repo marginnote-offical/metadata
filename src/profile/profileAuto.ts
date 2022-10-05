@@ -235,7 +235,7 @@ export async function saveProfile(name: string, key: string, value: any) {
         }
       }
     }
-    const timeout = 3
+    const timeout = 1
     if (self.backupWaitTimes === undefined) {
       // console.log("新计时器")
       self.backupWaitTimes = 0

@@ -1,7 +1,7 @@
 import lang from "./lang"
 import { more, constModules, modules } from "./modules"
 import { ModuleKeyType } from "./mergeMethod"
-import { ISection, IConfig, IRow, IRowButton } from "./typings"
+import { ISection, IConfig, IRow } from "./typings"
 import { CellViewType } from "./enum"
 import { serialSymbols } from "./utils"
 
@@ -55,22 +55,20 @@ const genDataSource = (configs: IConfig[], magicaction4card: IConfig) => {
     name: []
   }
   const actions4card =
-    magicaction4card.actions4card?.map(k => ({
+    magicaction4card.actions?.map(k => ({
       ...k,
       module: "magicaction" as ModuleKeyType,
       moduleName: "MagicAction"
     })) ?? []
   configs.forEach(config => {
     dataSource.push(genSection(config))
-    if (config.actions4card?.length)
+    if (config.actions?.length)
       actions4card.push(
-        ...config.actions4card.map(k => ({
+        ...config.actions.map(k => ({
           ...k,
           moduleName: config.name,
           module: config.key as ModuleKeyType,
-          help:
-            lang.magicaction_from_which_module(config.name) +
-            (k.help ? "\n" + k.help : "")
+          help: k.help
         }))
       )
   })
@@ -85,7 +83,7 @@ const genDataSource = (configs: IConfig[], magicaction4card: IConfig) => {
   Action4CardSection.rows.push(...actions4card)
 
   // 更新 quickSwitch 为 moduleList
-  const [AddonSection, ShortcutSection, GestureSection] = dataSource
+  const [AddonSection] = dataSource
   for (const row of AddonSection.rows) {
     if (row.type == CellViewType.MuiltSelect && row.key == "quickSwitch")
       row.option = moduleNameList.name.map(
@@ -112,54 +110,6 @@ function genDataSourceIndex(dataSource: ISection[]) {
     }, {} as Record<string, [number, number]>)
     return acc
   }, {} as Record<ModuleKeyType, Record<string, [number, number]>>)
-}
-
-const getActionKeyGetureOption = (section: ISection) => {
-  const gestureOption = [lang.open_panel]
-  const actionKeys = []
-  for (const _row of section.rows) {
-    if (
-      _row.type !== CellViewType.Button &&
-      _row.type !== CellViewType.ButtonWithInput
-    )
-      continue
-    const row = _row as IRowButton
-    gestureOption.push(row.label)
-    if (!row.option?.length)
-      actionKeys.push({
-        key: row.key,
-        module: row.module,
-        moduleName: row.moduleName,
-        option: row.type === CellViewType.ButtonWithInput ? undefined : 0
-      })
-    else {
-      actionKeys.push({
-        key: row.key,
-        module: row.module,
-        moduleName: row.moduleName
-      })
-      if (row.type == CellViewType.Button) {
-        row.option.forEach((option, index) => {
-          gestureOption.push("——" + option)
-          actionKeys.push({
-            key: row.key,
-            option: index,
-            module: row.module,
-            moduleName: row.moduleName
-          })
-        })
-      } else if (row.option[0].includes("Auto")) {
-        gestureOption.push("——" + row.option[0])
-        actionKeys.push({
-          key: row.key,
-          option: 0,
-          module: row.module,
-          moduleName: row.moduleName
-        })
-      }
-    }
-  }
-  return { actionKeys, gestureOption }
 }
 
 export const { dataSource: dataSourcePreset, moduleNameList } = genDataSource(

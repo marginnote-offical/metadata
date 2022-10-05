@@ -1,10 +1,11 @@
 import magicaction from "./magicaction"
+import zotero from "./zotero"
 import addon from "./addon"
 import { CellViewType } from "~/enum"
 import { ISection } from "~/typings"
 import lang from "~/lang"
 
-export const modules = {}
+export const modules = { zotero }
 
 export const constModules = { addon, magicaction }
 

@@ -10,8 +10,7 @@ export type IConfig<T extends keyof IAllProfile | null = null> = {
   settings: ISetting<
     T extends keyof IAllProfile ? IAllProfile[T] : Record<string, any>
   >[]
-  actions4card?: IAction<IActionMethod4Card>[]
-  actions4text?: IAction<IActionMethod4Text>[]
+  actions?: IAction<IActionMethod>[]
 }
 
 /** Help must be set before using link */
@@ -66,7 +65,7 @@ export type ISetting<T> =
   | ISettingSwitch<T>
   | ISettingInlineInput<T>
 
-export type IAction<T extends IActionMethod4Card | IActionMethod4Text> = {
+export type IAction<T extends IActionMethod > = {
   key: string
   label: string
   type: CellViewType.Button | CellViewType.ButtonWithInput
@@ -80,23 +79,11 @@ export type IAction<T extends IActionMethod4Card | IActionMethod4Text> = {
   check?: ICheckMethod
 }
 
-export type IActionMethod4Card = ({
+export type IActionMethod = ({
   content,
-  nodes,
   option
 }: {
   content: string
-  nodes: MbBookNote[]
-  option: number
-}) => any
-
-export type IActionMethod4Text = ({
-  text,
-  imgBase64,
-  option
-}: {
-  text: string
-  imgBase64: string
   option: number
 }) => any
 

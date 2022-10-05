@@ -1,6 +1,5 @@
 import { CellViewType } from "~/enum"
 import { defineConfig } from "~/profile"
-import { doc } from "~/utils"
 import { lang } from "./lang"
 
 export default defineConfig({
@@ -8,7 +7,7 @@ export default defineConfig({
   key: "magicaction",
   intro: lang.intro,
   settings: [],
-  actions4card: [
+  actions: [
     {
       key: "manageProfile",
       type: CellViewType.Button,

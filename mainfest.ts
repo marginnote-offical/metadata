@@ -1,7 +1,7 @@
 export const mainfest: Mainfest = {
   author: "MarginNote(ourongxing)",
   key: "metadata",
-  title: "MetaData",
+  title: "Metadata",
   version: "0.9.0",
   minMarginNoteVersion: "3.7.18",
   profileKey: {

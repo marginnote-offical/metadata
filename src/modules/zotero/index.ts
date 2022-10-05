@@ -7,7 +7,7 @@ export default defineConfig({
   key: "zotero",
   link: Addon.forum,
   intro:
-    "【仅 Mac】从 Zotro 中获取文档源数据。请确保安装了 Zotero，并且 Zotero 中有该文档的源数据。               ",
+    "【仅 Mac】从 Zotro 中获取文档元数据。请确保安装了 Zotero，并且 Zotero 中有该文档的元数据。               ",
   settings: [
     {
       key: "test",
@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   actions: [
     {
-      key: "fetchMetaData",
+      key: "fetchMetadata",
       type: CellViewType.ButtonWithInput,
       help: "输入需要获取的文档名称，获取成功后会自动写入当前文档的配置中。",
       option: ["使用当前文档名", "确定"],

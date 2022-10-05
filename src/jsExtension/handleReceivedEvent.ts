@@ -11,7 +11,8 @@ export const eventHandlers = eventHandlerController(
     Addon.key + "InputOver",
     Addon.key + "ButtonClick",
     Addon.key + "SelectChange",
-    Addon.key + "SwitchChange"
+    Addon.key + "SwitchChange",
+    "AddonBroadcast"
   ],
   Addon.key
 )
@@ -62,9 +63,19 @@ const onInputOver: EventHandler = async sender => {
   await saveProfile(name, key, content)
 }
 
+const onAddonBroadcast: EventHandler = async sender => {
+  console.log("Addon broadcast", "event")
+  const { message } = sender.userInfo
+  const params = message.replace(new RegExp(`^${Addon.key}\\?`), "")
+  if (message !== params) {
+    // await handleURLScheme(params)
+  }
+}
+
 export default {
   onInputOver,
   onButtonClick,
   onSelectChange,
-  onSwitchChange
+  onSwitchChange,
+  onAddonBroadcast
 }

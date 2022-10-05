@@ -8,7 +8,7 @@ const defaultGlobalProfile = {
     panelHeight: [1],
     autoBackup: false,
     backupID: "",
-    showMetaData: true
+    showMetadata: true
   },
   zotero: {
     test: false

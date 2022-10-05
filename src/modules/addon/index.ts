@@ -54,7 +54,7 @@ export default defineConfig({
       }
     },
     {
-      key: "showMetaData",
+      key: "showMetadata",
       type: CellViewType.Switch,
       label: "显示/隐藏元数据"
     },
@@ -62,7 +62,7 @@ export default defineConfig({
       key: "pageOffset",
       type: CellViewType.InlineInput,
       label: "页面偏移量",
-      bind: ["showMetaData", true],
+      bind: ["showMetadata", true],
       check({ input }) {
         if (!/^[0-9\- ]*$/.test(input.trim())) throw ""
       }

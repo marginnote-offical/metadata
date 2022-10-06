@@ -5,6 +5,7 @@ import { EventHandler } from "~/typings"
 import { saveProfile } from "~/profile"
 import { eventHandlerController, isThisWindow, showHUD } from "~/sdk"
 import handleMagicAction from "./magicActionHandler"
+import handleURLScheme from "./handleURLScheme"
 
 export const eventHandlers = eventHandlerController(
   [
@@ -68,7 +69,7 @@ const onAddonBroadcast: EventHandler = async sender => {
   const { message } = sender.userInfo
   const params = message.replace(new RegExp(`^${Addon.key}\\?`), "")
   if (message !== params) {
-    // await handleURLScheme(params)
+    await handleURLScheme(params)
   }
 }
 

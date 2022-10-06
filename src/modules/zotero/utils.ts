@@ -5,7 +5,6 @@ import { MbBookNote } from "~/typings"
 import { dateFormat } from "~/utils"
 import { Metadata, ReturnData } from "./typings"
 
-// zotero://select/items/1_4F53LCFB
 export async function fetchItemByTitle(title: string) {
   const { APIKey, userID } = self.globalProfile.zotero
   const res = await fetch(`https://api.zotero.org/users/${userID}/items`, {

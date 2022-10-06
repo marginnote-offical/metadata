@@ -2,6 +2,10 @@ import { Addon } from "~/addon"
 import { MN } from "~/sdk"
 
 const zh = {
+  shortcut_range: "shortcut 参数请传入范围内的整数",
+  no_action: "必须传入 action 参数",
+  action_not_exist: "action 参数不正确",
+  option_interger: "option 参数请传入整数",
   input_saved: "输入已保存",
   input_clear: "输入已清空",
   input_error: "格式错误，请重新输入",
@@ -62,6 +66,10 @@ const zh = {
 }
 
 const en: typeof zh = {
+  shortcut_range: "shortcut 参数请传入范围内的整数",
+  no_action: "必须传入 action 参数",
+  action_not_exist: "action 参数不正确",
+  option_interger: "option 参数请传入整数",
   input_saved: "Input Saved",
   input_clear: "Input Clear",
   none: "None",

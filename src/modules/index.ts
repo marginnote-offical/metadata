@@ -1,9 +1,9 @@
 import magicaction from "./magicaction"
-import zotero from "./zotero"
 import addon from "./addon"
 import { CellViewType } from "~/enum"
 import { ISection } from "~/typings"
 import lang from "~/lang"
+import zotero from "./zotero"
 
 export const modules = { zotero }
 
@@ -16,7 +16,7 @@ export const more: ISection = {
     {
       type: CellViewType.PlainText,
       label: "本插件为 OhMyMN 系列插件。",
-      link: "https://ohmymn.marginnote.cn"
+      link: "https://github.com/marginnoteapp/metadata"
     },
     {
       type: CellViewType.PlainText,

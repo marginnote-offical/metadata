@@ -200,7 +200,7 @@ export async function readProfilefromCard(node: MbBookNote) {
         throw lang.parse_failed
       }
     })()
-    if (data.key !== undefined && data.key !== Addon.key)
+    if (data.key !== Addon.key)
       throw lang.not_this_profile
     const profiles = data.profiles ?? data
     Addon.lastVersion = data.version

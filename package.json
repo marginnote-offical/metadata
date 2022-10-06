@@ -6,7 +6,7 @@
   ],
   "version": "0.9.0",
   "license": "MIT",
-  "description": "",
+  "description": "Used to import document metadata from Zotero",
   "scripts": {
     "dev": "tsx ./build.ts",
     "build": "NODE_ENV=production pnpm dev",

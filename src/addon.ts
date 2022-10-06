@@ -16,7 +16,9 @@ class MNADDON {
   github = mainfest.github
   forum = MN.isZH ? mainfest.forumZH : mainfest.forum
   doc = MN.isZH ? mainfest.docZH : mainfest.doc
+  zoteroDB?: SQLiteDatabase
   lastVersion!: string
+  zoteroVersion!: number
 }
 
 export const Addon = new MNADDON()

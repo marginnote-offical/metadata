@@ -1,132 +1,105 @@
-import { Addon } from "~/addon"
 import { MN } from "~/sdk"
+import { doc } from "~/utils"
 
 const zh = {
-  intro: `当前版本：${Addon.version}`,
-  profile: {
-    $option5: [
-      "配置 1",
-      "配置 2",
-      "配置 3",
-      "配置 4",
-      "初始化"
-    ] as StringTuple<5>,
-    label: "选择全局配置",
-    help: "【仅当前笔记本】不同场景，不同配置"
+  intro: "没什么可说的",
+  default_merge_text: {
+    help: "合并卡片内文字时的前后修饰，默认添加序号和换行（$&代表每一段），点击查看自定义方法。                 ",
+    error: "缺少 $&"
   },
-  quick_switch: {
-    label: "模块快捷开关"
+  rename_title: {
+    label: "重命名标题",
+    help: `$& 指代原标题。输入 "%['1'] $&" 可快速为选中卡片标题编号。`
   },
-  panel_position: {
-    $option6: [
-      "文档靠内",
-      "文档脑图中间",
-      "脑图靠内",
-      "靠左",
-      "居中",
-      "靠右"
-    ] as StringTuple<6>,
-    label: "面板显示位置"
+  smart_selection: {
+    label: "智能选择",
+    help: "帮助你快速选中子卡片，后代卡片"
   },
-  panel_height: {
-    $option3: ["高点", "标准", "矮点"] as StringTuple<3>,
-    label: "面板显示高度"
+  filter_cards: {
+    label: "筛选卡片",
+    $option5: ["所有", "标题", "摘录", "评论", "标签"] as StringTuple<5>
   },
-  panle_control: {
-    $option3: [
-      "双击图标打开面板",
-      "双击面板关闭面板",
-      "动作执行完关闭面板"
-    ] as StringTuple<3>,
-    label: "面板显示控制"
+  switch_title: {
+    label: "切换摘录标题",
+    help: "当两者都存在时请使用「交换标题和摘录」",
+    $option2: ["切换为不存在的", "交换标题和摘录"] as StringTuple<2>
   },
-  has_title_then: {
-    $option3: ["不转为标题", "合并标题", "覆盖标题"] as StringTuple<3>,
-    label: "如果标题存在",
-    help: "【AutoTitle、AutoDef、AutoComplete】 \n如果卡片已有标题，此时通过手型工具拖拽文字合并进该卡片，如果这段文字也会产生新标题，则                                "
+  merge_text: {
+    label: "合并卡片内文字",
+    help: "仅支持合并文字摘录和文字评论，不合并标签和链接，其余内容会在合并后置顶",
+    is_excerpt_pic:
+      "检测到当前摘录为图片，合并为摘录后仍旧是图片，是否继续合并为摘录？",
+    $excerpt_pic_option2: ["继续", "合并为评论"] as StringTuple<2>,
+    $option2: ["合并为摘录", "合并为评论"] as StringTuple<2>
   },
-  remove_excerpt: {
-    $option3: ["立即删除", "等会删除", "不删除"] as StringTuple<3>,
-    label: "转为标题后, 原摘录将",
-    help: "接上文，拖拽文字并合并进卡片会变为摘录，然后转为标题，选择「等会删除」可以给你一个修改这段摘录的机会，并且会在下次摘录时自动删除。                              "
+  merge_cards: {
+    label: "合并卡片",
+    $option2: ["同时合并标题", "不合并标题"] as StringTuple<2>
   },
-  lock_excerpt: {
-    label: "锁定摘录文字"
+  manage_profile: {
+    label: "配置管理",
+    $option4: [
+      "读取配置",
+      "写入配置",
+      "重置配置",
+      "同步其他窗口的配置"
+    ] as StringTuple<4>,
+    help: "写入配置时请确保该卡片至少有一张子卡片。多张子卡片可以一起分担配置，防止单张卡片字数过多。"
   },
-  auto_backup: {
-    label: "自动备份配置",
-    help: "MagicAction for Card -> 配置管理 -> 写入配置，写入后才能自动备份。"
-  },
-  backup_ID: {
-    help: "输入备份卡片链接，请确保该卡片有子卡片，否则无法写入。子卡片越多越好。",
-    not_link: "不是卡片链接",
-    not_exit: "卡片不存在",
-    no_child: "卡片没有子卡片"
-  }
+  is_selected: "您需要的卡片已选中，请继续操作",
+  none_card: "未找到符合的卡片",
+  hierarchical_numbering: "请确保选中的每张卡片均为同层级且都有子卡片"
 }
 
 const en: typeof zh = {
-  intro: `Current Version: ${Addon.version}`,
-  profile: {
-    $option5: [
-      "Profile 1",
-      "Profile 2",
-      "Profile 3",
-      "Profile 4",
-      "Initialize"
+  intro:
+    "All actions need to select the card first. Click for the specific useage",
+  smart_selection: {
+    label: "Smart Selector",
+    help: "Help you quickly select the child card and descendant card"
+  },
+  default_merge_text: {
+    help: "The default prefix and suffix of the merged text. Click to see the custom method.                 ",
+    error: "Missing $&"
+  },
+  switch_title: {
+    help: "Use [Swap Title and Excerpt] when both are present」",
+    label: "Switch Excerption or Title",
+    $option2: ["Switch to Non-Existent", "Swap Title and Excerpt"]
+  },
+  filter_cards: {
+    label: "Filter Cards",
+    $option5: ["All", "Title", "Excerpt", "Comment", "Tag"]
+  },
+  merge_text: {
+    label: "Merge Text",
+    help: "Only support merging text excerpt and text comment, not merging tags and link, other content will be pinned after merging",
+    $excerpt_pic_option2: ["Continue", "Merge as Comment"],
+    is_excerpt_pic: "The excerpt is a picture, continue to merge as excerpt?",
+    $option2: ["Merged as Excerpt", "Merged as Comment"]
+  },
+  merge_cards: {
+    label: "Merge Multiple Cards",
+    $option2: ["Merge Title", "Not Merge Titles"]
+  },
+  manage_profile: {
+    label: "Manage Profile",
+    $option4: [
+      "Read Profile",
+      "Write Profile",
+      "Reset Profile",
+      "Sync Profile with Other Windows"
     ],
-    label: "Select Global Profile",
-    help: "[Only Current Notebook] Different scenes, different profile"
+    help: "Please make sure that the card has at least one child card when writing the profile. Multiple child cards can share the profile together to prevent a single card from having too many words."
   },
-  quick_switch: {
-    label: "Module Quick Switch"
+  rename_title: {
+    help: `$& refers to the original title. Enter "%['1'] $&" to Quickly number the selected card title.`,
+    label: "Rename Titles"
   },
-  panel_position: {
-    $option6: [
-      "Document Inner Side",
-      "Document MindMap Middle",
-      "MindMap Inner Side",
-      "Left",
-      "Center",
-      "Right"
-    ],
-    label: "Panel Position"
-  },
-  panel_height: {
-    $option3: ["Taller", "Standard", "Shorter"],
-    label: "Panel Height"
-  },
-  panle_control: {
-    $option3: [
-      "Double Click Icon to Open Panel",
-      "Double Click Panel to Close Panel",
-      "Close Panel After Action"
-    ],
-    label: "Panel Control"
-  },
-  has_title_then: {
-    $option3: ["Not Turn to Title", "Merge Title", "Override Title"],
-    label: "If Card Has Title",
-    help: "[AutoTitle, AutoDef, AutoComplete] \nIf the card already has a title, and you drag the text to merge into the card, and this text will also generate a new title, then"
-  },
-  remove_excerpt: {
-    $option3: ["Remove Immediately", "Remove Later", "Not Remove"],
-    label: "After Convert to Title, Excerpt Will",
-    help: 'As above, the text draged to merge into a card will become an excerpt, and then convert to title. Selecting "Remove Later" will give you a chance to edit this excerpt, and it will be automatically deleted next time you excerpt.'
-  },
-  lock_excerpt: {
-    label: "Lock Excerpt Text"
-  },
-  auto_backup: {
-    label: "Auto Backup Profile",
-    help: "MagicAction for Card -> Config Management -> Write Config, write it first to enable auto backup."
-  },
-  backup_ID: {
-    help: "Enter the backup card link, please make sure that the card has subcards, otherwise it cannot be written. The more subcards, the better.",
-    not_link: "Not a card url",
-    not_exit: "Card does not exist",
-    no_child: "Card has no subcards"
-  }
+  is_selected: "The card is selected, please continue",
+  none_card: "No matching cards found",
+  hierarchical_numbering:
+    "Ensure that each selected card is at the same level and has child node"
 }
 
 export const lang = MN.isZH ? zh : en

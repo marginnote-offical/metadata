@@ -1,4 +1,5 @@
 import { NSJSONReadingOptions, NSJSONWritingOptions } from "~/enum"
+import { isOCNull } from "./common"
 import { lang } from "./lang"
 
 class Response {
@@ -52,7 +53,7 @@ function initRequest(
         encodeURI(
           `${url}?${Object.entries(options.search).reduce((acc, cur) => {
             const [key, value] = cur
-            return `${acc ? acc + "&" : ""}${key}=${encodeURIComponent(value)}`
+            return `${acc ? acc + "&" : ""}${key}=${value}`
           }, "")}`
         )
       )
@@ -92,7 +93,7 @@ export function fetch(
         // UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         // It's strange, I can't get the res property
         // if (err.localizedDescription) reject(err.localizedDescription)
-        if (data.length() == 0) reject(lang.not_receive)
+        if (isOCNull(data) || data.length() == 0) reject(lang.not_receive)
         resolve(new Response(data as NSData))
       }
     )

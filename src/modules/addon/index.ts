@@ -54,18 +54,22 @@ export default defineConfig({
       }
     },
     {
-      key: "showMetadata",
-      type: CellViewType.Switch,
-      label: "显示/隐藏元数据"
-    },
-    {
       key: "pageOffset",
       type: CellViewType.InlineInput,
-      label: "页面偏移量",
-      bind: ["showMetadata", true],
+      label: "页码偏移量",
       check({ input }) {
         if (!/^[0-9\- ]*$/.test(input.trim())) throw ""
       }
+    },
+    {
+      key: "reference",
+      type: CellViewType.Input,
+      help: "引用。需要自行从 Zotero 中复制。"
+    },
+    {
+      key: "citeKey",
+      type: CellViewType.Input,
+      help: "Citation Key。需要自行从 Zotero 中复制。"
     }
   ]
 })

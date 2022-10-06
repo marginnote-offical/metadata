@@ -1,6 +1,6 @@
 <h1 align="center" style="margin-top: 10px;">Metadata</h1>
 <p align="center">
-  <b>Used to manage document metadata</b>
+  <b>Used to import document metadata from Zotero</b>
 </p>
 
 <p align="center">

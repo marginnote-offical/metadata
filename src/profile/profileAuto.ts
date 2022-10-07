@@ -90,9 +90,24 @@ export const readProfile: ReadPrifile = ({
           // Initialize all profile when new version release
         } else {
           console.log("Initialize doc profile", "profile")
-          self.allDocProfile = {
-            [docmd5]: defaultDocProfile
+          const goToPageData: Record<string, any> =
+            getLocalDataByKey("GoToPage.Offsets")
+          const p = {} as Record<string, IDocProfile>
+          if (goToPageData) {
+            for (const [k, v] of Object.entries(goToPageData)) {
+              const r = deepCopy(defaultDocProfile)
+              r.addon.pageOffset = String(v)
+              p[k] = r
+            }
           }
+          self.allDocProfile = {
+            [docmd5]: defaultDocProfile,
+            ...p
+          }
+          writeProfile({
+            range: Range.Doc,
+            docmd5: self.docmd5!
+          })
         }
 
         if (notebookProfileLocal) {
@@ -105,6 +120,10 @@ export const readProfile: ReadPrifile = ({
           self.allNotebookProfile = {
             [notebookid]: defaultNotebookProfile
           }
+          writeProfile({
+            range: Range.Notebook,
+            notebookid: self.notebookid
+          })
         }
 
         // update version

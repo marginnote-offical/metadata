@@ -200,8 +200,7 @@ export async function readProfilefromCard(node: MbBookNote) {
         throw lang.parse_failed
       }
     })()
-    if (data.key !== Addon.key)
-      throw lang.not_this_profile
+    if (data.key !== Addon.key) throw lang.not_this_profile
     const profiles = data.profiles ?? data
     Addon.lastVersion = data.version
     if (semver.gt(Addon.lastVersion, Addon.version)) {
@@ -368,6 +367,7 @@ export async function manageProfileAction(node: MbBookNote, option: number) {
         docmd5: self.docmd5!,
         notebookid: self.notebookid
       })
+      console.log(self.allDocProfile)
       showHUD(lang.profile_reset)
       break
     case 3:

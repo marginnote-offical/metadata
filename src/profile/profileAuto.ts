@@ -83,6 +83,7 @@ export const readProfile: ReadPrifile = ({
         } else {
           console.log("Initialize global profile", "profile")
           self.allGlobalProfile = Array(5).fill(defaultGlobalProfile)
+          setLocalDataByKey(self.allGlobalProfile, Addon.globalProfileKey)
         }
 
         if (docProfileLocal) {
@@ -104,10 +105,7 @@ export const readProfile: ReadPrifile = ({
             [docmd5]: defaultDocProfile,
             ...p
           }
-          writeProfile({
-            range: Range.Doc,
-            docmd5: self.docmd5!
-          })
+          setLocalDataByKey(self.allDocProfile, Addon.docProfileKey)
         }
 
         if (notebookProfileLocal) {
@@ -120,10 +118,7 @@ export const readProfile: ReadPrifile = ({
           self.allNotebookProfile = {
             [notebookid]: defaultNotebookProfile
           }
-          writeProfile({
-            range: Range.Notebook,
-            notebookid: self.notebookid
-          })
+          setLocalDataByKey(self.notebookProfile, Addon.notebookProfileKey)
         }
 
         // update version

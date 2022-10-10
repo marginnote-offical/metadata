@@ -102,7 +102,7 @@ const handleMagicAction = async ({
       }
       return
     } else {
-      actions[key]({
+     await actions[key]({
         content,
         option
       })

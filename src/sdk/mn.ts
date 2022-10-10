@@ -19,7 +19,6 @@ export const MN = {
   // isZH: true,
   app: Application.sharedInstance(),
   db: Database.sharedInstance(),
-  home: Application.sharedInstance().dbPath!.match(/^\/Users\/.+?\//g)![0],
   version: getVersion(),
   themeColor,
   currentTheme: () => themeColor[Application.sharedInstance().currentTheme!]

@@ -11,6 +11,7 @@ import {
 } from "./utils"
 import { ReturnData } from "./typings"
 import { Addon } from "~/addon"
+import { checkReplaceParam, extractArray, string2ReplaceParam } from "~/utils"
 
 export default defineConfig({
   name: "Zotero",
@@ -19,10 +20,24 @@ export default defineConfig({
     "从 Zotero 中获取元数据，并实现 MarignNote 和 Zotero 互相跳转。需要你注册 Zotero 帐号。",
   settings: [
     {
+      key: "autoImport",
+      type: CellViewType.Switch,
+      label: "文档打开时自动导入",
+      help: "在首次文档打开时自动检索并导入元数据。"
+    },
+    {
       key: "addURL",
       type: CellViewType.Switch,
       label: "添加 MN 回链",
-      help: "将 URL 字段设置为当前文档的 MN 链接，仅笔记本模式下可用。"
+      help: "将 URL 字段设置为当前文档的 MN 链接（笔记链接代替），仅笔记本模式下可用。"
+    },
+    {
+      key: "customTitle",
+      type: CellViewType.Input,
+      help: "使用 Replace 函数来提取文档名称的部分内容作为检索 Zotero 数据的标题。提取结果会作为手动或自动检索的文档名称。",
+      check({ input }) {
+        checkReplaceParam(input)
+      }
     },
     {
       key: "showAPIKey",
@@ -48,12 +63,12 @@ export default defineConfig({
     {
       key: "fetchMetadata",
       type: CellViewType.ButtonWithInput,
-      help: "输入需要获取的文档名称，获取成功后会自动写入当前文档的配置中。",
+      help: "输入需要检索的文档名称，成功后会自动写入当前文档的配置中。",
       option: ["使用当前文档名", "更新上次导入的条目", "确定"],
       label: "从 Zotero 导入元数据",
       method: async ({ content, option }) => {
         try {
-          const { APIKey, userID } = self.globalProfile.zotero
+          const { APIKey, userID, customTitle } = self.globalProfile.zotero
           if (!APIKey) {
             showHUD("请设置 API Key")
             return
@@ -66,6 +81,11 @@ export default defineConfig({
             content =
               MN.studyController().readerController.currentDocumentController
                 .document!.docTitle!
+            if (customTitle) {
+              const params = string2ReplaceParam(customTitle)
+              const r = extractArray(content, params)[0]
+              if (r) content = r
+            }
           }
           let data: ReturnData | undefined = undefined
           if (option === 1) {
@@ -79,25 +99,23 @@ export default defineConfig({
             if (content) {
               const res = await fetchItemByTitle(content)
               if (res) {
-                if (res.length) {
-                  if (res.length === 1) {
-                    if (
-                      await confirm(
-                        undefined,
-                        `发现条目：「${res[0].data.title}」。是否导入？`
-                      )
-                    )
-                      data = res[0]
-                  } else {
-                    const index = await selectIndex(
-                      res.map(k => k.data.title),
+                if (res.length === 1) {
+                  if (
+                    await confirm(
                       undefined,
-                      "搜索到以下条目，请选择需要导入的条目",
-                      true
+                      `发现条目：「${res[0].data.title}」。是否导入？`
                     )
-                    if (index !== -1) data = res[index]
-                  }
-                } else showHUD("没有找到该文档的元数据")
+                  )
+                    data = res[0]
+                } else if (res.length > 1) {
+                  const index = await selectIndex(
+                    res.map(k => k.data.title),
+                    undefined,
+                    "检索到以下条目，请选择需要导入的条目",
+                    true
+                  )
+                  if (index !== -1) data = res[index]
+                } else if (res.length === 0) throw "没有找到"
               } else throw ""
             } else showHUD("请输入文档名称")
           }
@@ -123,7 +141,13 @@ export default defineConfig({
             }
           }
         } catch (e) {
-          showHUD("获取失败，请检查网络以及 API Key，User ID 是否正确", 3)
+          const msg = String(e)
+          showHUD(
+            `检索失败：${
+              msg ? msg : "请检查网络以及 API Key，User ID 是否正确"
+            }`,
+            3
+          )
         }
       }
     },

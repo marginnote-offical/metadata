@@ -22,6 +22,7 @@ import { deepCopy } from "~/utils"
 import { eventHandlers } from "./handleReceivedEvent"
 import { closePanel, layoutViewController } from "./switchPanel"
 import { gestureHandlers } from "./handleGestureEvent"
+import { autoImportMetadata } from "~/modules/zotero/utils"
 
 /**
  * Addon life cycle
@@ -121,7 +122,7 @@ export default {
     eventHandlers.add()
     gestureHandlers().add()
   },
-  documentDidOpen(docmd5: string) {
+  async documentDidOpen(docmd5: string) {
     // Switch document, read doc profile
     if (self.docmd5)
       readProfile({
@@ -138,6 +139,7 @@ export default {
     }
     self.docmd5 = docmd5
     console.log("Open a document", "lifeCycle")
+    await autoImportMetadata()
   },
   notebookWillClose(notebookid: string) {
     console.log("Close a notebook", "lifeCycle")

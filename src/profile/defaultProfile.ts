@@ -12,6 +12,8 @@ const defaultGlobalProfile = {
   magicaction: {},
   zotero: {
     addURL: true,
+    autoImport: false,
+    customTitle: `(/^(.*)$/, "$1")`,
     userID: "",
     showAPIKey: false,
     APIKey: ""
@@ -32,7 +34,8 @@ const defaultDocProfile = {
     key: "",
     webURL: "",
     rest: [],
-    data: ""
+    data: "",
+    firstVisit: true
   }
 }
 

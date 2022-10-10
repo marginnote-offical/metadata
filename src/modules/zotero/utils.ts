@@ -1,11 +1,21 @@
 import { Addon } from "~/addon"
 import { StudyMode } from "~/enum"
-import { fetch, MN, openUrl } from "~/sdk"
+import { Range, writeProfile } from "~/profile"
+import {
+  confirm,
+  fetch,
+  HUDController,
+  MN,
+  openUrl,
+  selectIndex,
+  showHUD
+} from "~/sdk"
 import { MbBookNote } from "~/typings"
-import { dateFormat } from "~/utils"
+import { dateFormat, extractArray, string2ReplaceParam } from "~/utils"
 import { Metadata, ReturnData } from "./typings"
 
 export async function fetchItemByTitle(title: string) {
+  HUDController.show("正在检索")
   const { APIKey, userID } = self.globalProfile.zotero
   const res = await fetch(`https://api.zotero.org/users/${userID}/items`, {
     method: "GET",
@@ -18,10 +28,12 @@ export async function fetchItemByTitle(title: string) {
       itemType: "-attachment"
     }
   }).then(res => res.json())
+  HUDController.hidden()
   return res as ReturnData[]
 }
 
 export async function fetchItemByKey(key: string) {
+  HUDController.show("正在检索")
   const { APIKey, userID } = self.globalProfile.zotero
   const res = await fetch(
     `https://api.zotero.org/users/${userID}/items/${key}`,
@@ -33,6 +45,7 @@ export async function fetchItemByKey(key: string) {
       }
     }
   ).then(res => res.json())
+  HUDController.hidden()
   return res as ReturnData
 }
 
@@ -101,4 +114,68 @@ export function getDocURL() {
   return note?.noteId
     ? `marginnote3app://note/${note.noteId}`
     : `marginnote3app://notebook/${notebook.topicId}`
+}
+
+export async function autoImportMetadata() {
+  try {
+    const { autoImport, APIKey, userID, customTitle } =
+      self.globalProfile.zotero
+    const { firstVisit } = self.docProfile.additional
+    if (autoImport && APIKey && userID && firstVisit) {
+      self.docProfile.additional.firstVisit = false
+      let title =
+        MN.studyController().readerController.currentDocumentController
+          .document!.docTitle!
+      if (customTitle) {
+        const params = string2ReplaceParam(customTitle)
+        const r = extractArray(title, params)[0]
+        if (r) title = r
+      }
+      const res = await fetchItemByTitle(title)
+      let data: ReturnData | undefined = undefined
+      if (res) {
+        if (res.length === 1) {
+          if (
+            await confirm(
+              undefined,
+              `发现条目：「${res[0].data.title}」。是否导入？`
+            )
+          )
+            data = res[0]
+        } else if (res.length > 1) {
+          const index = await selectIndex(
+            res.map(k => k.data.title),
+            undefined,
+            "检索到以下条目，请选择需要导入的条目",
+            true
+          )
+          if (index !== -1) data = res[index]
+        } else if (res.length === 0) {
+          throw "没有找到"
+        }
+      } else throw ""
+      if (data) {
+        self.docProfile.additional.key = data.key
+        self.docProfile.additional.webURL = data.links.alternate.href
+        const metadata = genMetaData(data.data)
+        Addon.zoteroVersion = metadata.version
+        self.docProfile.additional.data = JSON.stringify(metadata, undefined, 2)
+        writeProfile({
+          range: Range.Doc,
+          docmd5: self.docmd5!
+        })
+        const url = getDocURL()
+        url && updateURL(metadata.key, url)
+        if (await confirm(undefined, "导入成功，是否查看其具体内容？")) {
+          viewJSONOnline(metadata)
+        }
+      }
+    }
+  } catch (e) {
+    const msg = String(e)
+    showHUD(
+      `检索失败：${msg ? msg : "请检查网络以及 API Key，User ID 是否正确。"}`,
+      3
+    )
+  }
 }

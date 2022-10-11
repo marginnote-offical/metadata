@@ -1,11 +1,16 @@
 import { Addon } from "~/addon"
 import { dataSourceIndex } from "~/dataSource"
 import lang from "~/lang"
-import { ModuleKeyType} from "~/mergeMethod"
-import { BindType, UITableView } from "~/typings"
-import { CellViewType, NSTextAlignment } from "~/enum"
+import { ModuleKeyType } from "~/mergeMethod"
+import { CellViewType, BindType } from "~/typings"
 import { byteSplitByLen, byteLength, byteSlice, serialSymbols } from "~/utils"
-import { MN, isOCNull } from "~/sdk"
+import {
+  NSIndexPath,
+  NSTextAlignment,
+  MN,
+  isNSNull,
+  UITableView
+} from "marginnote"
 
 function _indexPath2tag(indexPath: NSIndexPath): number {
   return indexPath.section * 100 + indexPath.row + 999
@@ -140,7 +145,7 @@ function tableViewCellForRowAtIndexPath(
       const image = NSData.dataWithContentsOfFile(
         Addon.path + `/icon/${row.key}.png`
       )
-      if (!isOCNull(image))
+      if (!isNSNull(image))
         cell.imageView.image = UIImage.imageWithDataScale(image, 2)
       return cell
     }
@@ -270,7 +275,7 @@ const initCellView = {
     if (MN.isMac) view.textColor = Addon.textColor
     view.delegate = self
     view.text = text
-    view.placeholder = "enter"
+    view.placeholder = "Enter"
     view.autoresizingMask = (1 << 1) | (1 << 5)
     return view
   },
@@ -280,7 +285,7 @@ const initCellView = {
     const view = new UITextField(frame)
     view.font = UIFont.systemFontOfSize(15)
     if (MN.isMac) view.textColor = Addon.textColor
-    view.placeholder = "enter"
+    view.placeholder = lang.input_over
     view.delegate = self
     view.autoresizingMask = (1 << 1) | (1 << 5)
     view.text = text

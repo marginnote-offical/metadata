@@ -1,10 +1,15 @@
+import {
+  getSelectNodes,
+  MbBookNote,
+  popup,
+  showHUD,
+  UIAlertViewStyle
+} from "marginnote"
 import lang from "~/lang"
+import { actions, checkInputCorrect } from "~/mergeMethod"
 import { PanelControl } from "~/modules/addon/typings"
-import { checkInputCorrect, actions } from "~/mergeMethod"
-import { IRowButton, MbBookNote } from "~/typings"
-import { CellViewType, UIAlertViewStyle } from "~/enum"
 import { getMNLinkValue, manageProfileAction } from "~/profile"
-import { showHUD, getSelectNodes, popup } from "~/sdk"
+import { CellViewType, IRowButton } from "~/typings"
 import { closePanel } from "./switchPanel"
 
 export default async (row: IRowButton, option?: number, content?: string) => {
@@ -102,7 +107,7 @@ const handleMagicAction = async ({
       }
       return
     } else {
-     await actions[key]({
+      await actions[key]({
         content,
         option
       })

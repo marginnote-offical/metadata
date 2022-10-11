@@ -1,18 +1,18 @@
-import { Addon } from "~/addon"
-import { StudyMode } from "~/enum"
-import { Range, writeProfile } from "~/profile"
 import {
   confirm,
   fetch,
   HUDController,
+  MbBookNote,
   MN,
   openUrl,
   selectIndex,
-  showHUD
-} from "~/sdk"
-import { MbBookNote } from "~/typings"
+  showHUD,
+  StudyMode
+} from "marginnote"
+import { Addon } from "~/addon"
+import { Range, writeProfile } from "~/profile"
 import { dateFormat, extractArray, string2ReplaceParam } from "~/utils"
-import { Metadata, ReturnData } from "./typings"
+import type { Metadata, ReturnData } from "./typings"
 
 export async function fetchItemByTitle(title: string) {
   HUDController.show("正在检索")

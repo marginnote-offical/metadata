@@ -1,5 +1,5 @@
 import { Addon } from "~/addon"
-import { MN } from "~/sdk"
+import { MN } from "marginnote"
 
 const zh = {
   shortcut_range: "shortcut 参数请传入范围内的整数",
@@ -9,6 +9,7 @@ const zh = {
   input_saved: "输入已保存",
   input_clear: "输入已清空",
   input_error: "格式错误，请重新输入",
+  input_over: "输入完按回车（Enter）保存",
   open_panel: "切换控制面板",
   none: "无",
   sure: "确定",
@@ -84,6 +85,7 @@ const en: typeof zh = {
   input_integer: "Please enter an integer",
   input_positive: "Please enter a positive integer",
   no_profile_in_card: "No custom content found",
+  input_over: "Press Enter to save",
   open_panel: "Switch Control Panel",
   input_error: "Input errors, please re-enter",
   not_select_card: "No card is selected",

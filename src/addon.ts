@@ -1,5 +1,6 @@
 import { mainfest } from "../mainfest"
-import { MN } from "./sdk"
+import { MN } from "marginnote"
+import type { SQLiteDatabase } from "marginnote"
 
 class MNADDON {
   path!: string

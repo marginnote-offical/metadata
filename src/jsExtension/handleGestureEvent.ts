@@ -1,7 +1,6 @@
-import { MN } from "~/sdk"
+import { UISwipeGestureRecognizerDirection } from "marginnote"
 import { PanelControl } from "~/modules/addon/typings"
-import { GestureHandler, UIView } from "~/typings"
-import { UISwipeGestureRecognizerDirection } from "~/enum"
+import { GestureHandler } from "~/typings"
 import { closePanel } from "./switchPanel"
 
 // Not support Mac

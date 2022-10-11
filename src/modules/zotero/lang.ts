@@ -1,5 +1,4 @@
-import { MN } from "~/sdk"
-import { doc } from "~/utils"
+import { MN } from "marginnote"
 
 const zh = {
   intro: "没什么可说的",

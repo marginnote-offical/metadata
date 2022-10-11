@@ -1,5 +1,5 @@
 import lang from "./lang"
-import { showHUD } from "./sdk"
+import { showHUD } from "marginnote"
 import { modules, constModules } from "./modules"
 import { ICheckMethod, IActionMethod } from "./typings"
 import { IAllProfile } from "./profile"

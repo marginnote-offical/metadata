@@ -1,7 +1,7 @@
 import queryString from "query-string"
 import { dataSourceIndex } from "~/dataSource"
 import lang from "~/lang"
-import { showHUD } from "~/sdk"
+import { showHUD } from "marginnote"
 import { IRowButton } from "~/typings"
 import magicActionHandler from "./magicActionHandler"
 import { switchPanel } from "./switchPanel"

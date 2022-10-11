@@ -1,6 +1,15 @@
+import {
+  getObjCClassDeclar,
+  isfileExists,
+  openUrl,
+  popup,
+  showHUD,
+  UIWindow
+} from "marginnote"
 import { Addon } from "~/addon"
 import { dataSourcePreset } from "~/dataSource"
 import lang from "~/lang"
+import { autoImportMetadata } from "~/modules/zotero/utils"
 import {
   defaultDocProfile,
   defaultGlobalProfile,
@@ -10,19 +19,10 @@ import {
   removeProfile
 } from "~/profile"
 import { settingViewControllerInst } from "~/settingViewController"
-import { UIWindow } from "~/typings"
-import {
-  getObjCClassDeclar,
-  isfileExists,
-  openUrl,
-  showHUD,
-  popup
-} from "~/sdk"
 import { deepCopy } from "~/utils"
+import { gestureHandlers } from "./handleGestureEvent"
 import { eventHandlers } from "./handleReceivedEvent"
 import { closePanel, layoutViewController } from "./switchPanel"
-import { gestureHandlers } from "./handleGestureEvent"
-import { autoImportMetadata } from "~/modules/zotero/utils"
 
 /**
  * Addon life cycle

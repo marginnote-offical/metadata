@@ -1,7 +1,7 @@
 import handleReceivedEvent from "~/jsExtension/handleReceivedEvent"
 import switchPanel from "~/jsExtension/switchPanel"
 import handleGestureEvent from "./jsExtension/handleGestureEvent"
-import { getObjCClassDeclar } from "~/sdk"
+import { getObjCClassDeclar } from "marginnote"
 import lifeCycle, { clsMethons } from "~/jsExtension/lifeCycle"
 import { Addon } from "~/addon"
 

@@ -1,7 +1,6 @@
 import magicaction from "./magicaction"
 import addon from "./addon"
-import { CellViewType } from "~/enum"
-import { ISection } from "~/typings"
+import { CellViewType, ISection } from "~/typings"
 import lang from "~/lang"
 import zotero from "./zotero"
 

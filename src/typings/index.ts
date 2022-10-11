@@ -1,9 +1,23 @@
-import { DocumentController, MbBookNote } from ".."
-import { DirectionOfSelection } from "~/enum"
+import type {
+  MbBookNote,
+  DocumentController,
+  DirectionOfSelection
+} from "marginnote"
 import { IRowButton } from "./DataSource"
+
 export * from "./Module"
 export * from "./DataSource"
 
+export const enum CellViewType {
+  PlainText = 0,
+  Switch = 1,
+  Button = 2,
+  ButtonWithInput = 3,
+  Input = 4,
+  InlineInput = 5,
+  Select = 6,
+  MuiltSelect = 7
+}
 export interface EventHandler {
   (sender: {
     // 不是都有哈，具体要看发送了什么

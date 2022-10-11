@@ -3,7 +3,7 @@ import { layoutViewController } from "~/jsExtension/switchPanel"
 import lang from "~/lang"
 import { EventHandler } from "~/typings"
 import { saveProfile } from "~/profile"
-import { eventHandlerController, isThisWindow, showHUD } from "~/sdk"
+import { eventHandlerController, isThisWindow, showHUD } from "marginnote"
 import handleMagicAction from "./magicActionHandler"
 import handleURLScheme from "./handleURLScheme"
 

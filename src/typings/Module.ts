@@ -1,6 +1,5 @@
 import { IAllProfile } from "~/profile"
-import { MbBookNote } from "../MarginNote"
-import { CellViewType } from "~/enum"
+import { CellViewType } from "."
 
 export type IConfig<T extends keyof IAllProfile | null = null> = {
   name: string
@@ -48,8 +47,7 @@ export type ISettingInput<T> = {
 export type ISettingSwitch<T> = {
   key: PickKeyByValue<T, boolean>
   type: CellViewType.Switch
-} &
-  HelpLinkLabel &
+} & HelpLinkLabel &
   Bind<T>
 
 export type ISettingSelect<T> = {
@@ -65,7 +63,7 @@ export type ISetting<T> =
   | ISettingSwitch<T>
   | ISettingInlineInput<T>
 
-export type IAction<T extends IActionMethod > = {
+export type IAction<T extends IActionMethod> = {
   key: string
   label: string
   type: CellViewType.Button | CellViewType.ButtonWithInput

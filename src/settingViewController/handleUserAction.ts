@@ -1,9 +1,13 @@
+import {
+  MN,
+  NSIndexPath,
+  openUrl,
+  postNotification,
+  UITableView
+} from "marginnote"
 import { Addon } from "~/addon"
 import { checkInputCorrect } from "~/mergeMethod"
-import { CellViewType } from "~/enum"
-import { MN, openUrl, postNotification } from "~/sdk"
-import { _isModuleOFF } from "./settingView"
-import { UITableView, IRowInput, IRowSwitch, IRowSelect } from "~/typings"
+import { CellViewType, IRowInput, IRowSelect, IRowSwitch } from "~/typings"
 import { byteLength } from "~/utils"
 
 function _tag2indexPath(tag: number): NSIndexPath {
@@ -28,7 +32,7 @@ async function tableViewDidSelectRowAtIndexPath(
     case CellViewType.Button:
       if (sec.key === "magicaction")
         postNotification(Addon.key + "ButtonClick", {
-          row,
+          row
         })
   }
 }

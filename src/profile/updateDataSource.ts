@@ -1,14 +1,13 @@
 import { dataSourceIndex } from "~/dataSource"
 import { layoutViewController } from "~/jsExtension/switchPanel"
-import {
-  IGlobalProfile,
-  IDocProfile,
-  INotebookProfile
-} from "~/profile"
-import { IRowSwitch, IRowInlineInput, IRowInput, IRowSelect } from "~/typings"
-import {
-  deepCopy,
-} from "~/utils"
+import type { IDocProfile, IGlobalProfile, INotebookProfile } from "~/profile"
+import type {
+  IRowInlineInput,
+  IRowInput,
+  IRowSelect,
+  IRowSwitch
+} from "~/typings"
+import { deepCopy } from "~/utils"
 
 export function updateProfileDataSource(
   profile: IGlobalProfile | IDocProfile | INotebookProfile,

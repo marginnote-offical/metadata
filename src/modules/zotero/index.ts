@@ -1,5 +1,5 @@
-import { confirm, MN, openUrl, selectIndex, showHUD } from "~/sdk"
-import { CellViewType } from "~/enum"
+import { confirm, MN, openUrl, selectIndex, showHUD } from "marginnote"
+import { CellViewType } from "~/typings"
 import { defineConfig, Range, writeProfile } from "~/profile"
 import {
   fetchItemByKey,

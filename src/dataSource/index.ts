@@ -1,11 +1,10 @@
-import { more, constModules, modules } from "./modules"
-import { ModuleKeyType } from "./mergeMethod"
-import { ISection, IConfig, IRow, CellViewType } from "./typings"
-import { serialSymbols } from "./utils"
+import { ModuleKeyType } from "~/merged"
+import { requiredModules } from "~/modules"
+import { IConfig, ISection, IRow, CellViewType } from "~/typings"
+import { serialSymbols } from "~/utils"
+import { more } from "./more"
 
-const { addon, magicaction } = constModules
-
-const genSection = (config: IConfig): ISection => {
+const genSection = (config: IConfig<ModuleKeyType>): ISection => {
   const rows: IRow[] = [
     {
       type: CellViewType.PlainText,
@@ -46,14 +45,17 @@ const genSection = (config: IConfig): ISection => {
   }
 }
 
-const genDataSource = (configs: IConfig[], magicaction4card: IConfig) => {
+const genDataSource = (
+  configs: IConfig<ModuleKeyType>[],
+  magicaction: IConfig<"magicaction">
+) => {
   const dataSource: ISection[] = []
   const moduleNameList: { key: string[]; name: string[] } = {
     key: [],
     name: []
   }
-  const actions4card =
-    magicaction4card.actions?.map(k => ({
+  const actions =
+    magicaction.actions?.map(k => ({
       ...k,
       module: "magicaction" as ModuleKeyType,
       moduleName: "MagicAction"
@@ -61,7 +63,7 @@ const genDataSource = (configs: IConfig[], magicaction4card: IConfig) => {
   configs.forEach(config => {
     dataSource.push(genSection(config))
     if (config.actions?.length)
-      actions4card.push(
+      actions.push(
         ...config.actions.map(k => ({
           ...k,
           moduleName: config.name,
@@ -77,8 +79,8 @@ const genDataSource = (configs: IConfig[], magicaction4card: IConfig) => {
     }
   })
 
-  const Action4CardSection = genSection(magicaction4card)
-  Action4CardSection.rows.push(...actions4card)
+  const ActionSection = genSection(magicaction as IConfig<ModuleKeyType>)
+  ActionSection.rows.push(...actions)
 
   // 更新 quickSwitch 为 moduleList
   const [AddonSection] = dataSource
@@ -90,7 +92,7 @@ const genDataSource = (configs: IConfig[], magicaction4card: IConfig) => {
       )
   }
 
-  dataSource.splice(1, 0, Action4CardSection)
+  dataSource.splice(1, 0, ActionSection)
   dataSource.push(more)
   return {
     dataSource,
@@ -110,9 +112,9 @@ function genDataSourceIndex(dataSource: ISection[]) {
   }, {} as Record<ModuleKeyType, Record<string, [number, number]>>)
 }
 
-export const { dataSource: dataSourcePreset, moduleNameList } = genDataSource(
-  // @ts-ignore
-  [addon, ...Object.values(modules)],
+const { addon, magicaction, zotero } = requiredModules
+export const { dataSource: defaultDataSource, moduleNameList } = genDataSource(
+  [addon, zotero] as IConfig<ModuleKeyType>[],
   magicaction
 )
-export const dataSourceIndex = genDataSourceIndex(dataSourcePreset)
+export const dataSourceIndex = genDataSourceIndex(defaultDataSource)

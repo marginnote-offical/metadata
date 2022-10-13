@@ -1,6 +1,6 @@
 import { CellViewType } from "~/typings"
 import { defineConfig } from "~/profile"
-import { lang } from "./lang"
+import lang from "./lang"
 
 export default defineConfig({
   name: "MagicAction",

@@ -6,7 +6,7 @@ import {
 } from "marginnote"
 import { Addon } from "~/addon"
 import { layoutViewController } from "~/JSExtension/switchPanel"
-import lang from "~/lang"
+import lang from "./lang"
 import { saveProfile } from "~/profile"
 import handleURLScheme from "./handleURLScheme"
 import handleMagicAction from "./magicActionHandler"

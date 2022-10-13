@@ -1,13 +1,14 @@
+import { ModuleKeyType } from "~/merged"
 import { IAllProfile } from "~/profile"
 import { CellViewType } from "."
 
-export type IConfig<T extends keyof IAllProfile | null = null> = {
+export type IConfig<T extends ModuleKeyType | null = null> = {
   name: string
-  key: T extends keyof IAllProfile ? T : string
+  key: T extends ModuleKeyType ? T : string
   intro: string
   link?: string
   settings: ISetting<
-    T extends keyof IAllProfile ? IAllProfile[T] : Record<string, any>
+    T extends ModuleKeyType ? IAllProfile[T] : Record<string, any>
   >[]
   actions?: IAction<IActionMethod>[]
 }

@@ -1,14 +1,12 @@
-import lang from "./lang"
+import lang from "./JSExtension/lang"
 import { showHUD } from "marginnote"
-import { modules, constModules } from "./modules"
+import { requiredModules } from "./modules"
 import { ICheckMethod, IActionMethod } from "./typings"
 import { IAllProfile } from "./profile"
-export type ModuleKeyType = Exclude<keyof IAllProfile, "additional"> | "more"
+export type ModuleKeyType = Exclude<keyof IAllProfile, "additional">
+export type DataSourceSection = ModuleKeyType | "more"
 
-export const { actions, checkers } = Object.values({
-  ...constModules,
-  ...modules
-}).reduce(
+export const { actions, checkers } = Object.values(requiredModules).reduce(
   (acc, module) => {
     module.settings.length &&
       module.settings.forEach(k => {

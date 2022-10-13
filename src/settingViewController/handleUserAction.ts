@@ -1,7 +1,7 @@
 import type { NSIndexPath, UITableView } from "marginnote"
 import { MN, openUrl, postNotification } from "marginnote"
 import { Addon } from "~/addon"
-import { checkInputCorrect } from "~/mergeMethod"
+import { checkInputCorrect } from "~/merged"
 import { CellViewType, IRowInput, IRowSelect, IRowSwitch } from "~/typings"
 import { byteLength } from "~/utils"
 

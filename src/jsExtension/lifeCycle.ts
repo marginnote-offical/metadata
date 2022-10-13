@@ -7,8 +7,8 @@ import {
   UIWindow
 } from "marginnote"
 import { Addon } from "~/addon"
-import { dataSourcePreset } from "~/dataSource"
-import lang from "~/lang"
+import { defaultDataSource } from "~/dataSource"
+import lang from "./lang"
 import { autoImportMetadata } from "~/modules/zotero/utils"
 import {
   defaultDocProfile,
@@ -58,7 +58,7 @@ export default defineLifeCycelHandler({
       self.globalProfile = deepCopy(defaultGlobalProfile)
       self.docProfile = deepCopy(defaultDocProfile)
       self.notebookProfile = deepCopy(defaultNotebookProfile)
-      self.dataSource = deepCopy(dataSourcePreset)
+      self.dataSource = deepCopy(defaultDataSource)
 
       self.settingViewController = SettingViewController.new()
       self.settingViewController.addon = self.addon

@@ -1,5 +1,5 @@
 import { build } from "@ourongxing/estrella"
-import { Plugin } from "esbuild"
+import type { Plugin } from "esbuild"
 import { mainfest } from "./mainfest"
 import copy from "esbuild-plugin-mxn-copy"
 import autoImport from "unplugin-auto-import/esbuild"
@@ -26,7 +26,7 @@ try {
 
 const footerText = `
 } catch (e) {
-  JSB.log("${mainfest.key}-error %@", String(e))
+  Application.sharedInstance().alert("${mainfest.title}-"+String(e))
 }
 `
 const outDir = isProd

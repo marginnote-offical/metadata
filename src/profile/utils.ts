@@ -1,6 +1,7 @@
 import { MN, noteComment } from "marginnote"
 import semver from "semver"
 import { Addon } from "~/addon"
+import { ModuleKeyType } from "~/merged"
 import { IConfig } from "~/typings"
 import { rewriteSelection } from "./defaultProfile"
 import {
@@ -59,7 +60,7 @@ export const cacheTransformer = {
   }
 }
 
-export function defineConfig<T extends keyof IAllProfile>(options: IConfig<T>) {
+export function defineConfig<T extends ModuleKeyType>(options: IConfig<T>) {
   return options
 }
 

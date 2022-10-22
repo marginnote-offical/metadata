@@ -1,43 +1,44 @@
+import {
+  isNSNull,
+  MN,
+  NSTextAlignment,
+  type NSIndexPath,
+  type UITableView
+} from "marginnote"
 import { Addon } from "~/addon"
 import { dataSourceIndex } from "~/dataSource"
+import { DataSourceSectionKeyUnion } from "~/merged"
+import { CellViewType, type BindType, type IRowSelect } from "~/typings"
+import { byteLength, byteSlice, byteSplitByLen, serialSymbols } from "~/utils"
 import lang from "./lang"
-import { DataSourceSection } from "~/merged"
-import { CellViewType, BindType } from "~/typings"
-import { byteSplitByLen, byteLength, byteSlice, serialSymbols } from "~/utils"
-import {
-  NSIndexPath,
-  NSTextAlignment,
-  MN,
-  isNSNull,
-  UITableView
-} from "marginnote"
 
 function _indexPath2tag(indexPath: NSIndexPath): number {
   return indexPath.section * 100 + indexPath.row + 999
 }
 
-// If the module is not enabled, the menu will be hidden
-export function _isModuleOFF(key: DataSourceSection): boolean {
+/** If the module is not enabled, the menu will be hidden */
+export function _isModuleOFF(key: DataSourceSectionKeyUnion) {
   return false
 }
 
 function numberOfSectionsInTableView() {
   return self.dataSource.length
 }
+
 function tableViewNumberOfRowsInSection(
   tableView: UITableView,
   section: number
 ) {
   const { key } = self.dataSource[section]
-  return _isModuleOFF(key) ? 0 : self.dataSource[section].rows.length
+  return self.dataSource[section].rows.length
 }
 
-const tableViewTitleForHeaderInSection = (
+function tableViewTitleForHeaderInSection(
   tableView: UITableView,
   section: number
-) => {
+) {
   const { key, header } = self.dataSource[section]
-  return _isModuleOFF(key) ? new NSNull() : header
+  return _isModuleOFF(key) ? undefined : header
 }
 
 // If one of the bind objects does not meet the requirements, it will be hidden
@@ -67,11 +68,14 @@ function _isBindOFF(bindArr: BindType, sectionKey: string) {
       const [key, v] = bind
       const [secIndex, rowIndex] = dataSourceIndex?.[sectionKey]?.[key]
       if (secIndex === undefined) {
-        console.error(`bind key does not exist：${key}`)
-        return true
+        throw `bind key does not exist：${key}`
       }
       const row = self.dataSource?.[secIndex].rows?.[rowIndex]
-      if (row.type === CellViewType.Switch && typeof v === "boolean")
+      if (
+        (row.type === CellViewType.Switch ||
+          row.type === CellViewType.Expland) &&
+        typeof v === "boolean"
+      )
         return row.status === v
       else if (
         row.type === CellViewType.Select ||
@@ -98,6 +102,10 @@ function tableViewHeightForRowAtIndexPath(
     case CellViewType.ButtonWithInput:
       if (row.module && _isModuleOFF(row.module)) return 0
       break
+    case CellViewType.Expland: {
+      if (row.bind && _isBindOFF(row.bind, key)) return 0
+      else return 30
+    }
     case CellViewType.PlainText: {
       if (row.bind && _isBindOFF(row.bind, key)) return 0
       const lines = byteSplitByLen(row.label, 45).length - 1
@@ -130,7 +138,25 @@ function tableViewCellForRowAtIndexPath(
       cell.textLabel.numberOfLines = 0
       cell.textLabel.textColor = UIColor.grayColor()
       cell.textLabel.font = UIFont.systemFontOfSize(12)
-      cell.textLabel.text = row.label
+      if (row.link) cell.textLabel.text = `⎋ ${row.label}`
+      else cell.textLabel.text = row.label
+      return cell
+    }
+    case CellViewType.Expland: {
+      const cell = UITableViewCell.makeWithStyleReuseIdentifier(
+        0,
+        "ExplandCellID"
+      )
+      if (!MN.isMac && row.bind && _isBindOFF(row.bind, key)) cell.hidden = true
+      cell.selectionStyle = 0
+      cell.textLabel.opaque = false
+      cell.textLabel.textAlignment = 0
+      cell.textLabel.lineBreakMode = 0
+      cell.textLabel.numberOfLines = 0
+      cell.textLabel.textColor = UIColor.grayColor()
+      cell.textLabel.font = UIFont.systemFontOfSize(12)
+      if (row.status) cell.textLabel.text = `▼ ${row.label[1]}`
+      else cell.textLabel.text = `▶ ${row.label[0]}`
       return cell
     }
     case CellViewType.Button:
@@ -217,7 +243,7 @@ function tableViewCellForRowAtIndexPath(
       cell.selectionStyle = 0
       const view = initCellView.select(
         row.type == CellViewType.Select
-          ? row.option[row.selections[0]]
+          ? row.option[row.selections[0]] ?? row.option[0]
           : row.selections.length
           ? `${row.selections.length} ✓`
           : lang.none

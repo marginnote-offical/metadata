@@ -1,10 +1,11 @@
 import {
-  defineLifeCycelHandler,
-  isfileExists,
+  alert,
+  defineLifeCycleHandler,
+  MN,
   openUrl,
   popup,
   showHUD,
-  UIWindow
+  StudyMode
 } from "marginnote"
 import { Addon } from "~/addon"
 import { defaultDataSource } from "~/dataSource"
@@ -16,7 +17,8 @@ import {
   defaultNotebookProfile,
   Range,
   readProfile,
-  removeProfile
+  removeProfile,
+  writeProfile
 } from "~/profile"
 import SettingViewController from "~/SettingViewController"
 import { deepCopy } from "~/utils"
@@ -36,14 +38,10 @@ import { closePanel, layoutViewController } from "./switchPanel"
  * 7. Close a window
  */
 
-/** Cache window */
-let _window: UIWindow
-
-export default defineLifeCycelHandler({
+export default defineLifeCycleHandler({
   instanceMethods: {
     sceneWillConnect() {
       console.log("Open a new window", "lifeCycle")
-      _window = self.window
       // Multiple windows will share global variables, so they need to be saved to self.
       self.panel = {
         status: false,
@@ -55,6 +53,7 @@ export default defineLifeCycelHandler({
         key: Addon.key,
         title: Addon.title
       }
+      self.isFirstOpenDoc = true
       self.globalProfile = deepCopy(defaultGlobalProfile)
       self.docProfile = deepCopy(defaultDocProfile)
       self.notebookProfile = deepCopy(defaultNotebookProfile)
@@ -62,65 +61,93 @@ export default defineLifeCycelHandler({
 
       self.settingViewController = SettingViewController.new()
       self.settingViewController.addon = self.addon
-      self.settingViewController.window = self.window
       self.settingViewController.dataSource = self.dataSource
-      self.settingViewController.profile = self.globalProfile
+      self.settingViewController.globalProfile = self.globalProfile
       self.settingViewController.docProfile = self.docProfile
       self.settingViewController.notebookProfile = self.notebookProfile
     },
     notebookWillOpen(notebookid: string) {
+      if (MN.studyController.studyMode === StudyMode.review) return
+      if (MN.db.getNotebookById(notebookid)?.documents?.length === 0) {
+        alert(lang.no_doc)
+        return
+      }
       console.log("Open a notebook", "lifeCycle")
-      self.notebookid = notebookid
-      if (self.docmd5)
+      if (!self.isFirstOpenDoc) {
         readProfile({
           range: Range.Notebook,
           notebookid
         })
+      }
       // Add hooks, aka observers
       eventHandlers.add()
       gestureHandlers().add()
     },
     async documentDidOpen(docmd5: string) {
+      if (MN.studyController.studyMode === StudyMode.review) return
       // Switch document, read doc profile
-      if (self.docmd5)
+      if (self.isFirstOpenDoc) {
+        console.log("First open a document", "lifeCycle")
+        self.isFirstOpenDoc = false
+        readProfile({
+          range: Range.All,
+          docmd5,
+          notebookid: MN.currnetNotebookid!
+        })
+      } else {
         readProfile({
           range: Range.Doc,
           docmd5
         })
-      else {
-        // First open a document, init all profile
-        readProfile({
-          range: Range.All,
-          docmd5,
-          notebookid: self.notebookid
-        })
       }
-      self.docmd5 = docmd5
       console.log("Open a document", "lifeCycle")
       await autoImportMetadata()
     },
     notebookWillClose(notebookid: string) {
+      if (MN.studyController.studyMode === StudyMode.review) return
+      if (MN.db.getNotebookById(notebookid)?.documents?.length === 0) return
       console.log("Close a notebook", "lifeCycle")
+      writeProfile({
+        range: Range.Notebook,
+        notebookid
+      })
       closePanel()
       // Remove hooks, aka observers
       eventHandlers.remove()
       gestureHandlers().remove()
     },
     documentWillClose(docmd5: string) {
+      if (MN.studyController.studyMode === StudyMode.review) return
+      writeProfile({
+        range: Range.Doc,
+        docmd5
+      })
       console.log("Close a document", "lifeCycle")
     },
     // Not triggered on ipad
     sceneDidDisconnect() {
       console.log("Close a window", "lifeCycle")
+      if (MN.isMac && MN.currentDocmd5 && MN.currnetNotebookid) {
+        writeProfile({
+          range: Range.All,
+          docmd5: MN.currentDocmd5,
+          notebookid: MN.currnetNotebookid
+        })
+      }
     },
     sceneWillResignActive() {
       // or go to the background
       console.log("Window is inactivation", "lifeCycle")
-      // !MN.isMac && closePanel()
+      if (!MN.isMac && MN.currentDocmd5 && MN.currnetNotebookid) {
+        writeProfile({
+          range: Range.All,
+          docmd5: MN.currentDocmd5,
+          notebookid: MN.currnetNotebookid
+        })
+      }
     },
     sceneDidBecomeActive() {
-      layoutViewController()
-      _window = self.window
+      !MN.isMac && layoutViewController()
       // or go to the foreground
       console.log("Window is activated", "lifeCycle")
     }
@@ -142,9 +169,9 @@ export default defineLifeCycelHandler({
         case 0: {
           removeProfile()
           // clear to be a new scene
-          self.docmd5 = undefined
+          self.isFirstOpenDoc = true
           // could not get the value of self.window
-          showHUD(lang.uninstall.profile_reset, 2, _window)
+          showHUD(lang.uninstall.profile_reset, 2)
           break
         }
         case 1: {
@@ -154,14 +181,6 @@ export default defineLifeCycelHandler({
     },
     addonDidConnect() {
       console.log("Addon connected", "lifeCycle")
-      if (
-        !isfileExists(`${Addon.path}/endict.db`) &&
-        isfileExists(`${Addon.path}/endict.zip`)
-      )
-        ZipArchive.unzipFileAtPathToDestination(
-          `${Addon.path}/endict.zip`,
-          Addon.path
-        )
     }
   }
 })

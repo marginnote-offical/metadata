@@ -23,7 +23,7 @@ export default defineConfig({
       key: "autoImport",
       type: CellViewType.Switch,
       label: "文档打开时自动导入",
-      help: "在首次文档打开时自动检索并导入元数据。"
+      help: "在笔记本模式下首次打开文档自动检索并导入元数据。"
     },
     {
       key: "addURL",
@@ -34,15 +34,15 @@ export default defineConfig({
     {
       key: "customTitle",
       type: CellViewType.Input,
-      help: "使用 Replace 函数来提取文档名称的部分内容作为检索 Zotero 数据的标题。提取结果会作为手动或自动检索的文档名称。",
+      help: "提取文档名称的部分内容作为检索 Zotero 数据的标题。提取结果会作为手动或自动检索的文档名称。",
       check({ input }) {
         checkReplaceParam(input)
       }
     },
     {
       key: "showAPIKey",
-      type: CellViewType.Switch,
-      label: "显示/隐藏 API Key"
+      type: CellViewType.Expland,
+      label: ["点击显示密钥，不要让别人看到", "点击隐藏密钥，不要让别人看到"]
     },
     {
       key: "userID",
@@ -78,9 +78,7 @@ export default defineConfig({
             return
           }
           if (option === 0) {
-            content =
-              MN.studyController().readerController.currentDocumentController
-                .document!.docTitle!
+            content = MN.currentDocumentController.document!.docTitle!
             if (customTitle) {
               const params = string2ReplaceParam(customTitle)
               const r = extractArray(content, params)[0]

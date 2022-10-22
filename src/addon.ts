@@ -1,4 +1,4 @@
-import { mainfest } from "../mainfest"
+import mainfest from "../mainfest"
 import { MN } from "marginnote"
 import type { SQLiteDatabase } from "marginnote"
 

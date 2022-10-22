@@ -1,6 +1,8 @@
 import {
   confirm,
   MbBookNote,
+  MN,
+  NodeNote,
   selectIndex,
   setLocalDataByKey,
   showHUD,
@@ -128,6 +130,7 @@ export async function writeProfile2Card(node: MbBookNote, full = true) {
 
 export async function readProfilefromCard(node: MbBookNote) {
   try {
+    if (!MN.currentDocmd5 || !MN.currnetNotebookid) return
     if (!node.childNotes?.length) throw lang.no_children
     // 传入单一全局配置
     async function getGlobalPath(p: any, n?: number) {
@@ -332,8 +335,8 @@ export async function readProfilefromCard(node: MbBookNote) {
     setLocalDataByKey(self.allDocProfile, Addon.docProfileKey)
     readProfile({
       range: Range.All,
-      docmd5: self.docmd5!,
-      notebookid: self.notebookid
+      docmd5: MN.currentDocmd5,
+      notebookid: MN.currnetNotebookid
     })
     layoutViewController()
     showHUD(lang.success)
@@ -343,38 +346,38 @@ export async function readProfilefromCard(node: MbBookNote) {
   }
 }
 
-export async function manageProfileAction(node: MbBookNote, option: number) {
+export async function manageProfileAction(node: NodeNote, option: number) {
+  if (!MN.currentDocmd5 || !MN.currnetNotebookid) return
   // Write
   switch (option) {
     case 0:
-      readProfilefromCard(node)
+      readProfilefromCard(node.note)
       break
     case 1:
-      if (!node.childNotes?.length) showHUD(lang.no_children)
+      if (!node.childNodes.length) showHUD(lang.no_children)
       else {
         writeProfile({
           range: Range.All,
-          docmd5: self.docmd5!,
-          notebookid: self.notebookid
+          docmd5: MN.currentDocmd5,
+          notebookid: MN.currnetNotebookid
         })
-        writeProfile2Card(node, false)
+        writeProfile2Card(node.note, false)
       }
       break
     case 2:
       removeProfile()
       readProfile({
         range: Range.All,
-        docmd5: self.docmd5!,
-        notebookid: self.notebookid
+        docmd5: MN.currentDocmd5,
+        notebookid: MN.currnetNotebookid
       })
-      console.log(self.allDocProfile)
       showHUD(lang.profile_reset)
       break
     case 3:
       readProfile({
         range: Range.All,
-        docmd5: self.docmd5!,
-        notebookid: self.notebookid
+        docmd5: MN.currentDocmd5,
+        notebookid: MN.currnetNotebookid
       })
       showHUD(lang.profile_sync)
       break

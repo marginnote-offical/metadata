@@ -2,7 +2,7 @@ import { ReplaceParam } from "~/utils"
 import {
   defaultDocProfile,
   defaultGlobalProfile,
-  defaultNotebookProfile,
+  defaultNotebookProfile
 } from "./defaultProfile"
 
 export const enum Range {

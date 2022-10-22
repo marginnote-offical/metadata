@@ -1,6 +1,6 @@
 import type { ISection } from "~/typings"
-import type { IDocProfile, IGlobalProfile, INotebookProfile } from "~/profile"
 import type { UITableView, UIWindow, UITableViewController } from "marginnote"
+import type { IDocProfile, IGlobalProfile, INotebookProfile } from "./profile"
 
 declare global {
   const self: {
@@ -14,6 +14,7 @@ declare global {
       lastClickButton: number
       lastReaderViewWidth: number
     }
+    isFirstOpenDoc: boolean
     backupWaitTimes: number | undefined
     webView: UIWebView
     view: UIView

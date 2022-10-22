@@ -1,8 +1,11 @@
 import { Addon } from "~/addon"
-import { ModuleKeyType } from "~/merged"
+import { AllModuleKeyUnion } from "~/merged"
 
 export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value))
-export const unique = <T>(arr: T[]): T[] => Array.from(new Set(arr))
+export const unique = <T>(arr: T[]): T[] => {
+  if (arr.length <= 1) return arr
+  else return Array.from(new Set(arr))
+}
 export function dateFormat(date: Date, fmt = "YYYY-mm-dd HH:MM") {
   let ret
   const opt = {
@@ -25,7 +28,18 @@ export function dateFormat(date: Date, fmt = "YYYY-mm-dd HH:MM") {
   return fmt
 }
 
-export function doc(module: ModuleKeyType, hash?: string) {
+export function isURL(url: string, include = false) {
+  if (include)
+    return /\w+:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/.test(
+      url
+    )
+  else
+    return /^\w+:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/.test(
+      url
+    )
+}
+
+export function doc(module: AllModuleKeyUnion, hash?: string) {
   return `${Addon.doc}/guide/modules/${module}.html${hash ? "#" + hash : ""}`
 }
 

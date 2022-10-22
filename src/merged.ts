@@ -1,10 +1,10 @@
-import lang from "./JSExtension/lang"
-import { showHUD } from "marginnote"
+import { MN, showHUD } from "marginnote"
 import { requiredModules } from "./modules"
-import { ICheckMethod, IActionMethod } from "./typings"
-import { IAllProfile } from "./profile"
-export type ModuleKeyType = Exclude<keyof IAllProfile, "additional">
-export type DataSourceSection = ModuleKeyType | "more"
+import type { IActionMethod, ICheckMethod } from "./typings"
+import type { IAllProfile } from "./profile"
+
+export type AllModuleKeyUnion = Exclude<keyof IAllProfile, "additional">
+export type DataSourceSectionKeyUnion = AllModuleKeyUnion | "more"
 
 export const { actions, checkers } = Object.values(requiredModules).reduce(
   (acc, module) => {
@@ -38,7 +38,14 @@ export async function checkInputCorrect(
       await checkers[key]({ input })
     }
   } catch (err) {
-    showHUD(err ? String(err) : lang.input_error, 3)
+    showHUD(
+      err
+        ? String(err)
+        : MN.isZH
+        ? "格式错误，请重新输入"
+        : "Input errors, please re-enter",
+      3
+    )
     return false
   }
   return true

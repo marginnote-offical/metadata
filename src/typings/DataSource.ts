@@ -1,8 +1,8 @@
-import { DataSourceSection, ModuleKeyType } from "~/merged"
+import { DataSourceSectionKeyUnion } from "~/merged"
 import { CellViewType } from "."
 
 export type ISection = {
-  key: DataSourceSection
+  key: DataSourceSectionKeyUnion
   header: string
   rows: IRow[]
 }
@@ -45,9 +45,17 @@ export type IRowInlineInput = {
   content: string
 } & KeyLabelBind
 
+export type IRowExpland = {
+  type: CellViewType.Expland
+  label: [string, string]
+  key: string
+  status: boolean
+  bind?: BindType
+}
+
 export type IRowButton = {
   type: CellViewType.Button | CellViewType.ButtonWithInput
-  module: DataSourceSection
+  module: DataSourceSectionKeyUnion
   moduleName: string
   option?: string[]
   help?: string
@@ -60,3 +68,4 @@ export type IRow =
   | IRowInput
   | IRowSelect
   | IRowSwitch
+  | IRowExpland

@@ -11,6 +11,7 @@ export default i18n({
     input_clear: "输入已清空",
     input_error: "格式错误，请重新输入",
     input_over: "输入完按回车（Enter）保存",
+    no_doc: `当前笔记本没有文档，${Addon.title} 无法正常工作。如果你正要打算添加文档，请在添加完成后重新打开笔记本。`,
     open_panel: "切换控制面板",
     none: "无",
     sure: "确定",
@@ -59,6 +60,7 @@ export default i18n({
     }
   },
   en: {
+    no_doc: `There is no document in the notebook, ${Addon.title} cannot work properly. If you are about to add documents, please reopen the notebook after adding.`,
     shortcut_range: "shortcut 参数请传入范围内的整数",
     no_action: "必须传入 action 参数",
     action_not_exist: "action 参数不正确",

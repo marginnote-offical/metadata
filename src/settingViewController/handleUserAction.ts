@@ -1,9 +1,21 @@
-import type { NSIndexPath, UITableView } from "marginnote"
-import { MN, openUrl, postNotification } from "marginnote"
+import {
+  type NSIndexPath,
+  type UITableView,
+  MN,
+  openUrl,
+  postNotification
+} from "marginnote"
 import { Addon } from "~/addon"
-import { checkInputCorrect } from "~/merged"
-import { CellViewType, IRowInput, IRowSelect, IRowSwitch } from "~/typings"
+import { checkInputCorrect, DataSourceSectionKeyUnion } from "~/merged"
+import {
+  CellViewType,
+  type IRowInput,
+  type IRowSelect,
+  type IRowSwitch
+} from "~/typings"
 import { byteLength } from "~/utils"
+import lang from "./lang"
+import { _isModuleOFF } from "./settingView"
 
 function _tag2indexPath(tag: number): NSIndexPath {
   return NSIndexPath.indexPathForRowInSection(
@@ -29,6 +41,16 @@ async function tableViewDidSelectRowAtIndexPath(
         postNotification(Addon.key + "ButtonClick", {
           row
         })
+      break
+    case CellViewType.Expland: {
+      row.status = !row.status
+      self.tableView.reloadData()
+      postNotification(Addon.key + "SwitchChange", {
+        name: sec.key,
+        key: row.key,
+        status: row.status
+      })
+    }
   }
 }
 
@@ -56,18 +78,18 @@ function switchChange(sender: UISwitch) {
   const indexPath: NSIndexPath = _tag2indexPath(sender.tag)
   const section = self.dataSource[indexPath.section]
   const row = <IRowSwitch>section.rows[indexPath.row]
-  row.status = sender.on ? true : false
+  row.status = !row.status
   self.tableView.reloadData()
   postNotification(Addon.key + "SwitchChange", {
     name: section.key,
     key: row.key,
-    status: sender.on ? true : false
+    status: row.status
   })
 }
 
 let lastSelectInfo:
   | {
-      name: string
+      name: DataSourceSectionKeyUnion
       key: string
       selections: number[]
     }
@@ -148,7 +170,7 @@ function clickSelectButton(sender: UIButton) {
       height * menuController.commandTable.filter(k => k.height !== zero).length
   }
 
-  const studyControllerView = MN.studyController().view
+  const studyControllerView = MN.studyController.view
   self.popoverController = new UIPopoverController(menuController)
   self.popoverController.presentPopoverFromRect(
     sender.convertRectToView(sender.bounds, studyControllerView),

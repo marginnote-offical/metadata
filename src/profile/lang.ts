@@ -1,6 +1,5 @@
-import { i18n } from "marginnote"
 import { Addon } from "~/addon"
-
+import { i18n } from "marginnote"
 export default i18n({
   zh: {
     note_title: `${Addon.title} 配置`,

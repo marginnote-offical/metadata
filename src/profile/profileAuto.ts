@@ -61,6 +61,7 @@ export const readProfile: ReadPrifile = ({
           | Record<string, INotebookProfile>
           | undefined = getLocalDataByKey(Addon.notebookProfileKey)
 
+        console.log(globalProfileLocal)
         if (globalProfileLocal) {
           Addon.lastVersion = globalProfileLocal[0].additional.lastVision
           self.allGlobalProfile = rewriteProfile(
@@ -156,11 +157,9 @@ export const readProfile: ReadPrifile = ({
 }
 
 /**
- *
  *  Saving the doc profile must save the global profile.
  *  Switching profile only save the global profile.
  *  Switching doc will be saved to the previous doc profile.
- *
  */
 export const writeProfile: WritePrifile = ({
   range,
@@ -208,6 +207,7 @@ export const writeProfile: WritePrifile = ({
 
 export async function saveProfile(name: string, key: string, value: any) {
   try {
+    if (!MN.currentDocmd5 || !MN.currnetNotebookid) return
     switch (key) {
       case "profile":
         const lastProfileNum = self.notebookProfile.addon.profile[0]
@@ -249,9 +249,9 @@ export async function saveProfile(name: string, key: string, value: any) {
         }
       }
     }
-    const timeout = 1
+    const timeout = 2
     if (self.backupWaitTimes === undefined) {
-      // console.log("新计时器")
+      console.log("Save profile: start new timer", "profile")
       self.backupWaitTimes = 0
       let i = timeout
       while (i) {
@@ -259,18 +259,16 @@ export async function saveProfile(name: string, key: string, value: any) {
           i = self.backupWaitTimes
           self.backupWaitTimes = 0
         } else i--
-        // console.log(i)
+        console.log(i, "profile")
         await delay(1)
       }
       self.backupWaitTimes = undefined
-      // console.log("计时结束")
-      self.docmd5 &&
-        self.notebookid &&
-        writeProfile({
-          range: Range.All,
-          docmd5: self.docmd5,
-          notebookid: self.notebookid
-        })
+      console.log("Save profile completed", "profile")
+      writeProfile({
+        range: Range.All,
+        docmd5: MN.currentDocmd5,
+        notebookid: MN.currnetNotebookid
+      })
       const { backupID, autoBackup } = self.globalProfile.addon
       if (backupID && autoBackup) {
         console.log("Auto backup to card", "profile")
@@ -280,8 +278,7 @@ export async function saveProfile(name: string, key: string, value: any) {
         node && writeProfile2Card(node)
       }
     } else {
-      // console.log("被打断")
-      self.backupWaitTimes = timeout
+      self.backupWaitTimes = self.backupWaitTimes + 1
     }
   } catch (err) {
     console.error(String(err))

@@ -1,8 +1,10 @@
 import {
   defineEventHandlers,
+  delayBreak,
   eventHandlerController,
-  isThisWindow,
-  showHUD
+  MN,
+  showHUD,
+  StudyMode
 } from "marginnote"
 import { Addon } from "~/addon"
 import { layoutViewController } from "~/JSExtension/switchPanel"
@@ -26,20 +28,20 @@ export default defineEventHandlers<
   typeof events[number] | typeof panelEvents[number]["handler"]
 >({
   async onButtonClick(sender) {
-    if (!isThisWindow(sender)) return
+    if (self.window !== MN.currentWindow) return
     // For magicaction
     console.log("Click a button", "event")
-    const { row } = sender.userInfo
+    const { row, type } = sender.userInfo
     await handleMagicAction(row)
   },
   async onSwitchChange(sender) {
-    if (!isThisWindow(sender)) return
+    if (self.window !== MN.currentWindow) return
     console.log("Switch the switch", "event")
     const { name, key, status } = sender.userInfo
     await saveProfile(name, key, status)
   },
   async onSelectChange(sender) {
-    if (!isThisWindow(sender)) return
+    if (self.window !== MN.currentWindow) return
     console.log("Change the selection", "event")
     const { name, key, selections } = sender.userInfo
     switch (key) {
@@ -53,7 +55,7 @@ export default defineEventHandlers<
     await saveProfile(name, key, selections)
   },
   async onInputOver(sender) {
-    if (!isThisWindow(sender)) return
+    if (self.window !== MN.currentWindow) return
     console.log("Input", "event")
     const { name, key } = sender.userInfo
     let { content } = sender.userInfo as { content: string }
@@ -68,6 +70,9 @@ export default defineEventHandlers<
     await saveProfile(name, key, content)
   },
   async onAddonBroadcast(sender) {
+    // 需要点击卡片才能锁定到当前窗口
+    if (self.window !== MN.currentWindow) return
+    if (MN.studyController.studyMode === StudyMode.review) return
     console.log("Addon broadcast", "event")
     const { message } = sender.userInfo
     const params = message.replace(new RegExp(`^${Addon.key}\\?`), "")

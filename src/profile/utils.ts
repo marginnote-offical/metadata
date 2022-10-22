@@ -1,11 +1,10 @@
-import { MN, noteComment } from "marginnote"
+import { MN, NoteComment } from "marginnote"
 import semver from "semver"
 import { Addon } from "~/addon"
-import { ModuleKeyType } from "~/merged"
+import { AllModuleKeyUnion } from "~/merged"
 import { IConfig } from "~/typings"
 import { rewriteSelection } from "./defaultProfile"
 import {
-  IAllProfile,
   IDocProfile,
   IGlobalProfile,
   INotebookProfile,
@@ -17,22 +16,29 @@ import {
  * @returns ID of note or the linked card value
  */
 export function getMNLinkValue(link: string) {
-  const noteid = link.replace("marginnote3app://note/", "")
-  if (noteid === link) return link
-  const node = MN.db.getNoteById(noteid)
-  if (node && node.childNotes?.length) {
-    const x = node.childNotes.reduce((acc, cur) => {
-      const firstComment = cur.comments[0] as noteComment
-      if (
-        cur.colorIndex !== 13 &&
-        firstComment.type === "TextNote" &&
-        firstComment.text
-      )
-        return [...acc, firstComment.text]
-      return acc
-    }, [] as string[])
-    if (x.length) return x.join(";")
-  } else return undefined
+  try {
+    const noteid = link.replace("marginnote3app://note/", "")
+    if (noteid === link) return link
+    const node = MN.db.getNoteById(noteid)
+    if (node && node.childNotes?.length) {
+      const x = node.childNotes.reduce((acc, cur) => {
+        if (cur.comments.length) {
+          const firstComment = cur.comments[0] as NoteComment
+          if (
+            cur.colorIndex !== 13 &&
+            firstComment.type === "TextNote" &&
+            firstComment.text
+          )
+            return [...acc, firstComment.text]
+        }
+        return acc
+      }, [] as string[])
+      if (x.length) return x.join(";")
+    }
+  } catch (e) {
+    console.error(e)
+    return undefined
+  }
 }
 
 export function checkNewVerProfile(profile: IGlobalProfile, profileSaved: any) {
@@ -60,7 +66,7 @@ export const cacheTransformer = {
   }
 }
 
-export function defineConfig<T extends ModuleKeyType>(options: IConfig<T>) {
+export function defineConfig<T extends AllModuleKeyUnion>(options: IConfig<T>) {
   return options
 }
 

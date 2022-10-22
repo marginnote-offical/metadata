@@ -1,4 +1,10 @@
-import { defineGestureHandlers, initGesture } from "marginnote"
+import {
+  defineGestureHandlers,
+  gestureHandlerController,
+  initGesture,
+  MN,
+  UISwipeGestureRecognizerDirection
+} from "marginnote"
 import { PanelControl } from "~/modules/addon/typings"
 import { closePanel } from "./switchPanel"
 
@@ -11,28 +17,6 @@ export const gestureHandlers = () =>
       gesture: initGesture.tap(1, 2, "DoubleClickOnTableView")
     }
   ])
-
-function gestureHandlerController(
-  handlerList: {
-    view: UIView
-    gesture: UIGestureRecognizer
-  }[]
-): {
-  add: () => void
-  remove: () => void
-} {
-  const add = () => {
-    handlerList.forEach(v => {
-      v.view.addGestureRecognizer(v.gesture)
-    })
-  }
-  const remove = () => {
-    handlerList.forEach(v => {
-      v.view.removeGestureRecognizer(v.gesture)
-    })
-  }
-  return { add, remove }
-}
 
 export default defineGestureHandlers({
   onDoubleClickOnTableView() {

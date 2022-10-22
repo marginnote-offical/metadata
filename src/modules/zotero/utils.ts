@@ -10,7 +10,7 @@ import {
   StudyMode
 } from "marginnote"
 import { Addon } from "~/addon"
-import { Range, writeProfile } from "~/profile"
+import { writeProfile, Range } from "~/profile"
 import { dateFormat, extractArray, string2ReplaceParam } from "~/utils"
 import type { Metadata, ReturnData } from "./typings"
 
@@ -97,20 +97,19 @@ export async function viewJSONOnline(json: any) {
 }
 
 export function getDocURL() {
-  if (MN.studyController().studyMode !== StudyMode.study) return
+  if (MN.studyController.studyMode !== StudyMode.study) return
   const notebook = MN.db.getNotebookById(self.notebookid)!
-  const note =
-    MN.studyController().notebookController.mindmapView.mindmapNodes?.reduce(
-      (acc, k) => {
-        if (k.note.docMd5 === self.docmd5 && k.note.modifiedDate) {
-          if (acc?.modifiedDate) {
-            if (acc.modifiedDate < k.note.modifiedDate) return k.note
-          } else return k.note
-        }
-        return acc
-      },
-      undefined as undefined | MbBookNote
-    )
+  const note = MN.notebookController.mindmapView.mindmapNodes?.reduce(
+    (acc, k) => {
+      if (k.note.docMd5 === self.docmd5 && k.note.modifiedDate) {
+        if (acc?.modifiedDate) {
+          if (acc.modifiedDate < k.note.modifiedDate) return k.note
+        } else return k.note
+      }
+      return acc
+    },
+    undefined as undefined | MbBookNote
+  )
   return note?.noteId
     ? `marginnote3app://note/${note.noteId}`
     : `marginnote3app://notebook/${notebook.topicId}`
@@ -118,56 +117,64 @@ export function getDocURL() {
 
 export async function autoImportMetadata() {
   try {
-    const { autoImport, APIKey, userID, customTitle } =
-      self.globalProfile.zotero
-    const { firstVisit } = self.docProfile.additional
-    if (autoImport && APIKey && userID && firstVisit) {
-      self.docProfile.additional.firstVisit = false
-      let title =
-        MN.studyController().readerController.currentDocumentController
-          .document!.docTitle!
-      if (customTitle) {
-        const params = string2ReplaceParam(customTitle)
-        const r = extractArray(title, params)[0]
-        if (r) title = r
-      }
-      const res = await fetchItemByTitle(title)
-      let data: ReturnData | undefined = undefined
-      if (res) {
-        if (res.length === 1) {
-          if (
-            await confirm(
-              undefined,
-              `发现条目：「${res[0].data.title}」。是否导入？`
-            )
-          )
-            data = res[0]
-        } else if (res.length > 1) {
-          const index = await selectIndex(
-            res.map(k => k.data.title),
-            undefined,
-            "检索到以下条目，请选择需要导入的条目",
-            true
-          )
-          if (index !== -1) data = res[index]
-        } else if (res.length === 0) {
-          throw "没有找到"
+    if (
+      MN.studyController.studyMode === StudyMode.study &&
+      MN.currentDocmd5 &&
+      MN.currnetNotebookid
+    ) {
+      const { autoImport, APIKey, userID, customTitle } =
+        self.globalProfile.zotero
+      const { firstVisit } = self.docProfile.additional
+      if (autoImport && APIKey && userID && firstVisit) {
+        self.docProfile.additional.firstVisit = false
+        let title = MN.currentDocumentController.document!.docTitle!
+        if (customTitle) {
+          const params = string2ReplaceParam(customTitle)
+          const r = extractArray(title, params)[0]
+          if (r) title = r
         }
-      } else throw ""
-      if (data) {
-        self.docProfile.additional.key = data.key
-        self.docProfile.additional.webURL = data.links.alternate.href
-        const metadata = genMetaData(data.data)
-        Addon.zoteroVersion = metadata.version
-        self.docProfile.additional.data = JSON.stringify(metadata, undefined, 2)
-        writeProfile({
-          range: Range.Doc,
-          docmd5: self.docmd5!
-        })
-        const url = getDocURL()
-        url && updateURL(metadata.key, url)
-        if (await confirm(undefined, "导入成功，是否查看其具体内容？")) {
-          viewJSONOnline(metadata)
+        const res = await fetchItemByTitle(title)
+        let data: ReturnData | undefined = undefined
+        if (res) {
+          if (res.length === 1) {
+            if (
+              await confirm(
+                undefined,
+                `发现条目：「${res[0].data.title}」。是否导入？`
+              )
+            )
+              data = res[0]
+          } else if (res.length > 1) {
+            const index = await selectIndex(
+              res.map(k => k.data.title),
+              undefined,
+              "检索到以下条目，请选择需要导入的条目",
+              true
+            )
+            if (index !== -1) data = res[index]
+          } else if (res.length === 0) {
+            throw "没有找到"
+          }
+        } else throw ""
+        if (data) {
+          self.docProfile.additional.key = data.key
+          self.docProfile.additional.webURL = data.links.alternate.href
+          const metadata = genMetaData(data.data)
+          Addon.zoteroVersion = metadata.version
+          self.docProfile.additional.data = JSON.stringify(
+            metadata,
+            undefined,
+            2
+          )
+          writeProfile({
+            range: Range.Doc,
+            docmd5: MN.currentDocmd5
+          })
+          const url = getDocURL()
+          url && updateURL(metadata.key, url)
+          if (await confirm(undefined, "导入成功，是否查看其具体内容？")) {
+            viewJSONOnline(metadata)
+          }
         }
       }
     }

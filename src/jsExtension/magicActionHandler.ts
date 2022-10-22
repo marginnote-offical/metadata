@@ -1,10 +1,4 @@
-import {
-  getSelectNodes,
-  MbBookNote,
-  popup,
-  showHUD,
-  UIAlertViewStyle
-} from "marginnote"
+import { NodeNote, popup, showHUD, UIAlertViewStyle } from "marginnote"
 import lang from "./lang"
 import { actions, checkInputCorrect } from "~/merged"
 import { PanelControl } from "~/modules/addon/typings"
@@ -90,12 +84,11 @@ const handleMagicAction = async ({
   content?: string
 }) => {
   try {
-    let nodes: MbBookNote[] = []
     self.globalProfile.addon.panelControl.includes(
       PanelControl.CompleteClose
     ) && closePanel()
 
-    nodes = getSelectNodes()
+    const nodes = NodeNote.getSelectedNodes()
     if (key === "manageProfile") {
       if (option > 1) await manageProfileAction(nodes[0], option)
       else {
@@ -109,6 +102,7 @@ const handleMagicAction = async ({
     } else {
       await actions[key]({
         content,
+        nodes,
         option
       })
     }

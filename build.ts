@@ -1,6 +1,6 @@
 import { build } from "@ourongxing/estrella"
 import type { Plugin } from "esbuild"
-import { mainfest } from "./mainfest"
+import mainfest from "./mainfest"
 import copy from "esbuild-plugin-mxn-copy"
 import autoImport from "unplugin-auto-import/esbuild"
 import { homedir } from "os"
@@ -18,6 +18,7 @@ Copyright (c) 2022 MarginNote
 
 If you want to view the source code, please visit the github repository.
 Github: ${mainfest.github}
+
 Welcome to contribute to this project!
 */
 
@@ -29,10 +30,13 @@ const footerText = `
   Application.sharedInstance().alert("${mainfest.title}-"+String(e))
 }
 `
+
 const outDir = isProd
   ? "./dist/"
-  : homedir() +
-    `/Library/Containers/QReader.MarginStudyMac/Data/Library/MarginNote Extensions/marginnote.extension.${mainfest.key}/`
+  : // : homedir() +
+    //   `/Library/Containers/QReader.MarginStudyMac/Data/Library/MarginNote Extensions/marginnote.extension.${mainfest.key}/`
+    homedir() +
+    `/Library/MarginNote Extensions/marginnote.extension.${mainfest.key}/`
 
 function clear(): Plugin {
   return {
@@ -88,15 +92,15 @@ function genMainfest(): Plugin {
 
 const plugins: Plugin[] = [
   clear(),
-  !isProd &&
-    autoImport({
-      imports: [
-        {
-          marginnote: ["console"]
-        }
-      ],
-      dts: false
-    }),
+  // !isProd &&
+  //   autoImport({
+  //     imports: [
+  //       {
+  //         marginnote: ["console"]
+  //       }
+  //     ],
+  //     dts: false
+  //   }),
   mainfest.files?.length &&
     copy({
       copy: mainfest.files.map(k => ({

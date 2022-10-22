@@ -1,14 +1,15 @@
-import { ModuleKeyType } from "~/merged"
 import { IAllProfile } from "~/profile"
+import { NodeNote } from "marginnote"
 import { CellViewType } from "."
+import { AllModuleKeyUnion } from "~/merged"
 
-export type IConfig<T extends ModuleKeyType | null = null> = {
+export type IConfig<T extends AllModuleKeyUnion | null = null> = {
   name: string
-  key: T extends ModuleKeyType ? T : string
+  key: T extends AllModuleKeyUnion ? T : string
   intro: string
   link?: string
   settings: ISetting<
-    T extends ModuleKeyType ? IAllProfile[T] : Record<string, any>
+    T extends AllModuleKeyUnion ? IAllProfile[T] : Record<string, any>
   >[]
   actions?: IAction<IActionMethod>[]
 }
@@ -51,6 +52,12 @@ export type ISettingSwitch<T> = {
 } & HelpLinkLabel &
   Bind<T>
 
+export type ISettingExpland<T> = {
+  key: PickKeyByValue<T, boolean>
+  type: CellViewType.Expland
+  label: [string, string]
+} & Bind<T>
+
 export type ISettingSelect<T> = {
   key: PickKeyByValue<T, number[]>
   type: CellViewType.Select | CellViewType.MuiltSelect
@@ -63,6 +70,7 @@ export type ISetting<T> =
   | ISettingSelect<T>
   | ISettingSwitch<T>
   | ISettingInlineInput<T>
+  | ISettingExpland<T>
 
 export type IAction<T extends IActionMethod> = {
   key: string
@@ -80,9 +88,11 @@ export type IAction<T extends IActionMethod> = {
 
 export type IActionMethod = ({
   content,
+  nodes,
   option
 }: {
   content: string
+  nodes: NodeNote[]
   option: number
 }) => any
 

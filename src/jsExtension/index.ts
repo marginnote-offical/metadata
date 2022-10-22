@@ -10,8 +10,8 @@ export default JSB.defineClass(
   {
     ...lifeCycle.instanceMethods,
     ...switchPanel,
-    ...handleReceivedEvent,
-    ...handleGestureEvent
+    ...handleGestureEvent,
+    ...handleReceivedEvent
   },
   lifeCycle.classMethods
 )

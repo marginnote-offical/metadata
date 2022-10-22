@@ -1,3 +1,4 @@
+import { Addon } from "~/addon"
 import { ISection, CellViewType } from "~/typings"
 import lang from "./lang"
 
@@ -7,23 +8,23 @@ export const more: ISection = {
   rows: [
     {
       type: CellViewType.PlainText,
-      label: "本插件为 OhMyMN 系列插件。",
+      label: lang.intro_metadata,
       link: "https://github.com/marginnoteapp/metadata"
     },
     {
       type: CellViewType.PlainText,
       label: lang.website,
-      link: "https://ohmymn.marginnote.cn"
+      link: Addon.doc
     },
     {
       type: CellViewType.PlainText,
       label: lang.core_team,
-      link: "https://github.com/marginnoteapp/ohmymn"
+      link: Addon.github
     },
     {
       type: CellViewType.PlainText,
       label: lang.intro,
-      link: "https://github.com/marginnoteapp/ohmymn"
+      link: Addon.github
     },
     {
       type: CellViewType.PlainText,

@@ -4,7 +4,7 @@
   "contributors": [
     "ourongxing<https://github.com/ourongxing>"
   ],
-  "version": "0.9.0",
+  "version": "0.9.4",
   "license": "MIT",
   "description": "Used to import document metadata from Zotero",
   "scripts": {
@@ -17,6 +17,10 @@
     "prepare": "husky install"
   },
   "lint-staged": {
+    "package.json": [
+      "tsx ./scripts/updateVersion.ts",
+      "git add README.md"
+    ],
     "src/**/*.{js,jsx,ts,tsx,json}": [
       "prettier --write",
       "eslint --cache --fix",
@@ -50,7 +54,7 @@
     "unplugin-auto-import": "^0.11.2"
   },
   "dependencies": {
-    "marginnote": "^0.9.9",
+    "marginnote": "0.9.15",
     "query-string": "^7.1.1",
     "semver": "^7.3.7"
   }

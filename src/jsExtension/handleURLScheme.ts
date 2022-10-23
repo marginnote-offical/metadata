@@ -28,6 +28,6 @@ export default async function (params: string) {
     )
   } catch (e) {
     showHUD(String(e), 2)
-    console.error(e)
+    dev.error(e)
   }
 }

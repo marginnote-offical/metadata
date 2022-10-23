@@ -3,6 +3,7 @@ import type { UITableView, UIWindow, UITableViewController } from "marginnote"
 import type { IDocProfile, IGlobalProfile, INotebookProfile } from "./profile"
 
 declare global {
+  const dev: typeof import("marginnote")["dev"]
   const self: {
     addon?: {
       key: string
@@ -14,6 +15,7 @@ declare global {
       lastClickButton: number
       lastReaderViewWidth: number
     }
+    useConsole?: boolean
     isFirstOpenDoc: boolean
     backupWaitTimes: number | undefined
     webView: UIWebView

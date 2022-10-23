@@ -2,7 +2,7 @@ import { i18n } from "marginnote"
 
 export default i18n({
   zh: {
-    intro: "没什么可说的",
+    intro: "点击执行",
     default_merge_text: {
       help: "合并卡片内文字时的前后修饰，默认添加序号和换行（$&代表每一段），点击查看自定义方法。                 ",
       error: "缺少 $&"
@@ -51,7 +51,7 @@ export default i18n({
     hierarchical_numbering: "请确保选中的每张卡片均为同层级且都有子卡片"
   },
   en: {
-    intro: "Nothing to say",
+    intro: "Click to execute",
     smart_selection: {
       label: "Smart Selector",
       help: "Help you quickly select the child card and descendant card"

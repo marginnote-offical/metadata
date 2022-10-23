@@ -107,6 +107,6 @@ const handleMagicAction = async ({
       })
     }
   } catch (err) {
-    console.error(String(err))
+    dev.error(String(err))
   }
 }

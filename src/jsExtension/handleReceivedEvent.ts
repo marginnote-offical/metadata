@@ -30,19 +30,19 @@ export default defineEventHandlers<
   async onButtonClick(sender) {
     if (self.window !== MN.currentWindow) return
     // For magicaction
-    console.log("Click a button", "event")
+    dev.log("Click a button", "event")
     const { row, type } = sender.userInfo
     await handleMagicAction(row)
   },
   async onSwitchChange(sender) {
     if (self.window !== MN.currentWindow) return
-    console.log("Switch the switch", "event")
+    dev.log("Switch the switch", "event")
     const { name, key, status } = sender.userInfo
     await saveProfile(name, key, status)
   },
   async onSelectChange(sender) {
     if (self.window !== MN.currentWindow) return
-    console.log("Change the selection", "event")
+    dev.log("Change the selection", "event")
     const { name, key, selections } = sender.userInfo
     switch (key) {
       case "panelPosition":
@@ -56,7 +56,7 @@ export default defineEventHandlers<
   },
   async onInputOver(sender) {
     if (self.window !== MN.currentWindow) return
-    console.log("Input", "event")
+    dev.log("Input", "event")
     const { name, key } = sender.userInfo
     let { content } = sender.userInfo as { content: string }
     showHUD(content ? lang.input_saved : lang.input_clear)
@@ -73,7 +73,7 @@ export default defineEventHandlers<
     // 需要点击卡片才能锁定到当前窗口
     if (self.window !== MN.currentWindow) return
     if (MN.studyController.studyMode === StudyMode.review) return
-    console.log("Addon broadcast", "event")
+    dev.log("Addon broadcast", "event")
     const { message } = sender.userInfo
     const params = message.replace(new RegExp(`^${Addon.key}\\?`), "")
     if (message !== params) {

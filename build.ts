@@ -92,15 +92,15 @@ function genMainfest(): Plugin {
 
 const plugins: Plugin[] = [
   clear(),
-  // !isProd &&
-  //   autoImport({
-  //     imports: [
-  //       {
-  //         marginnote: ["console"]
-  //       }
-  //     ],
-  //     dts: false
-  //   }),
+  !isProd &&
+    autoImport({
+      imports: [
+        {
+          marginnote: ["dev"]
+        }
+      ],
+      dts: false
+    }),
   mainfest.files?.length &&
     copy({
       copy: mainfest.files.map(k => ({
@@ -127,7 +127,7 @@ build({
   footer: {
     js: footerText
   },
-  pure: ["console.log", "console.error", "console.assert", "console.warn"],
+  pure: ["dev.log", "dev.error", "dev.assert"],
   bundle: true,
   target: "safari13",
   plugins

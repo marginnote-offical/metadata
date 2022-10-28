@@ -1,7 +1,5 @@
 import {
-  alert,
-  defineLifeCycleHandler,
-  MN,
+  defineLifecycleHandler,
   openUrl,
   popup,
   showHUD,
@@ -15,6 +13,7 @@ import {
   defaultDocProfile,
   defaultGlobalProfile,
   defaultNotebookProfile,
+  defaultTempProfile,
   Range,
   readProfile,
   removeProfile,
@@ -38,10 +37,10 @@ import { closePanel, layoutViewController } from "./switchPanel"
  * 7. Close a window
  */
 
-export default defineLifeCycleHandler({
+export default defineLifecycleHandler({
   instanceMethods: {
     sceneWillConnect() {
-      self.useConsole = true
+      // self.useConsole = true
       dev.log("Open a new window", "lifeCycle")
       // Multiple windows will share global variables, so they need to be saved to self.
       self.panel = {
@@ -59,6 +58,7 @@ export default defineLifeCycleHandler({
       self.docProfile = deepCopy(defaultDocProfile)
       self.notebookProfile = deepCopy(defaultNotebookProfile)
       self.dataSource = deepCopy(defaultDataSource)
+      self.tempProfile = deepCopy(defaultTempProfile)
 
       self.settingViewController = SettingViewController.new()
       self.settingViewController.addon = self.addon
@@ -68,12 +68,8 @@ export default defineLifeCycleHandler({
       self.settingViewController.notebookProfile = self.notebookProfile
     },
     notebookWillOpen(notebookid: string) {
-      if (MN.studyController.studyMode === StudyMode.review) return
-      if (MN.db.getNotebookById(notebookid)?.documents?.length === 0) {
-        alert(lang.no_doc)
-        return
-      }
       dev.log("Open a notebook", "lifeCycle")
+      if (MN.studyController.studyMode === StudyMode.review) return
       if (!self.isFirstOpenDoc) {
         readProfile({
           range: Range.Notebook,
@@ -83,8 +79,24 @@ export default defineLifeCycleHandler({
       // Add hooks, aka observers
       eventHandlers.add()
       gestureHandlers().add()
+      if (MN.db.getNotebookById(notebookid)?.documents?.length === 0) {
+        if (self.isFirstOpenDoc) {
+          self.isFirstOpenDoc = false
+          readProfile({
+            range: Range.All,
+            docmd5: "00000000",
+            notebookid
+          })
+        } else {
+          readProfile({
+            range: Range.Doc,
+            docmd5: "00000000"
+          })
+        }
+      }
     },
     async documentDidOpen(docmd5: string) {
+      dev.log("Open a document", "lifeCycle")
       if (MN.studyController.studyMode === StudyMode.review) return
       // Switch document, read doc profile
       if (self.isFirstOpenDoc) {
@@ -101,13 +113,11 @@ export default defineLifeCycleHandler({
           docmd5
         })
       }
-      dev.log("Open a document", "lifeCycle")
       await autoImportMetadata()
     },
     notebookWillClose(notebookid: string) {
-      if (MN.studyController.studyMode === StudyMode.review) return
-      if (MN.db.getNotebookById(notebookid)?.documents?.length === 0) return
       dev.log("Close a notebook", "lifeCycle")
+      if (MN.studyController.studyMode === StudyMode.review) return
       writeProfile({
         range: Range.Notebook,
         notebookid
@@ -118,12 +128,12 @@ export default defineLifeCycleHandler({
       gestureHandlers().remove()
     },
     documentWillClose(docmd5: string) {
+      dev.log("Close a document", "lifeCycle")
       if (MN.studyController.studyMode === StudyMode.review) return
       writeProfile({
         range: Range.Doc,
         docmd5
       })
-      dev.log("Close a document", "lifeCycle")
     },
     // Not triggered on ipad
     sceneDidDisconnect() {

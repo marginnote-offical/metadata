@@ -1,8 +1,7 @@
 import { requiredModules } from "../modules"
 import { AllModuleKeyUnion, DataSourceSectionKeyUnion } from "../merged"
-import type { ISection, IConfig, IRow, IRowButton } from "~/typings"
+import type { ISection, IConfig, IRow } from "~/typings"
 import { CellViewType } from "~/typings"
-import { serialSymbols } from "../utils"
 import { more } from "./more"
 
 function genSection(config: IConfig<AllModuleKeyUnion>): ISection {
@@ -78,17 +77,6 @@ function genDataSource(
 
   const ActionSection = genSection(magicaction as IConfig<AllModuleKeyUnion>)
   ActionSection.rows.push(...actions)
-
-  // 更新 quickSwitch 为 moduleList
-  const [AddonSection] = dataSource
-  for (const row of AddonSection.rows) {
-    if (row.type == CellViewType.MuiltSelect && row.key == "quickSwitch")
-      row.option = moduleNameList.name.map(
-        (value, index) =>
-          serialSymbols.hollow_circle_number[index] + " " + value
-      )
-  }
-
   dataSource.splice(1, 0, ActionSection)
   dataSource.push(more)
   return {

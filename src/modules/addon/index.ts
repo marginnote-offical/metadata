@@ -1,5 +1,4 @@
 import { Addon } from "~/addon"
-import { MN } from "marginnote"
 import { defineConfig } from "~/profile"
 import lang from "./lang"
 import { CellViewType } from "~/typings"
@@ -64,12 +63,7 @@ export default defineConfig({
     {
       key: "reference",
       type: CellViewType.Input,
-      help: "【仅当前文档】参考文献/引用，或者其他任何信息。"
-    },
-    {
-      key: "citeKey",
-      type: CellViewType.Input,
-      help: "【仅当前文档】Citation Key。需要自行从 Zotero 中复制。"
+      help: "【仅当前文档】参考文献/引用，或者其他任何信息。你可以从 Zotero 中复制。"
     }
   ]
 })

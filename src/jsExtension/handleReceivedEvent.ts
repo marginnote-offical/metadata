@@ -1,15 +1,13 @@
 import {
   defineEventHandlers,
-  delayBreak,
   eventHandlerController,
-  MN,
   showHUD,
   StudyMode
 } from "marginnote"
 import { Addon } from "~/addon"
 import { layoutViewController } from "~/JSExtension/switchPanel"
 import lang from "./lang"
-import { saveProfile } from "~/profile"
+import { saveProfile, updateProfileTemp } from "~/profile"
 import handleURLScheme from "./handleURLScheme"
 import handleMagicAction from "./magicActionHandler"
 
@@ -39,6 +37,10 @@ export default defineEventHandlers<
     dev.log("Switch the switch", "event")
     const { name, key, status } = sender.userInfo
     await saveProfile(name, key, status)
+    if (status === false && key === "useTemp") {
+      Addon.tempReturnedData = undefined
+      self.globalProfile.additional.temp = ""
+    }
   },
   async onSelectChange(sender) {
     if (self.window !== MN.currentWindow) return
@@ -59,6 +61,7 @@ export default defineEventHandlers<
     dev.log("Input", "event")
     const { name, key } = sender.userInfo
     let { content } = sender.userInfo as { content: string }
+    updateProfileTemp(key, content)
     showHUD(content ? lang.input_saved : lang.input_clear)
     switch (key) {
       case "pageOffset": {

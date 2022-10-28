@@ -2,7 +2,8 @@ import { ReplaceParam } from "~/utils"
 import {
   defaultDocProfile,
   defaultGlobalProfile,
-  defaultNotebookProfile
+  defaultNotebookProfile,
+  defaultTempProfile
 } from "./defaultProfile"
 
 export const enum Range {
@@ -143,6 +144,7 @@ type UtilProfile<T> = {
 }
 
 export type IGlobalProfile = UtilProfile<typeof defaultGlobalProfile>
+export type ITempProfile = UtilTemp<typeof defaultTempProfile>
 export type IDocProfile = UtilProfile<typeof defaultDocProfile>
 export type INotebookProfile = UtilProfile<typeof defaultNotebookProfile>
 export type IAllProfile = IGlobalProfile & IDocProfile & INotebookProfile

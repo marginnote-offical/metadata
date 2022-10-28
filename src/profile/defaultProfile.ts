@@ -11,14 +11,18 @@ const defaultGlobalProfile = {
   },
   magicaction: {},
   zotero: {
-    addURL: true,
+    addURL: false,
+    noNeedConfirm: false,
     autoImport: false,
-    customTitle: `(/^(.*)$/, "$1")`,
+    useTemp: false,
+    dirMatch: "/.+/",
+    customTitle: `(/^(.+)$/, "$1")`,
     userID: "",
     showAPIKey: false,
     APIKey: ""
   },
   additional: {
+    temp: "",
     lastVision: Addon.version
   }
 }
@@ -27,14 +31,16 @@ const defaultGlobalProfile = {
 const defaultDocProfile = {
   addon: {
     pageOffset: "0",
-    citeKey: "",
     reference: ""
   },
   additional: {
+    rest: [],
     key: "",
     webURL: "",
-    rest: [],
     data: "",
+    attachmentKey: "",
+    attachmentVersion: "",
+    citeKey: "",
     firstVisit: true
   }
 }
@@ -44,6 +50,20 @@ const defaultNotebookProfile = {
     profile: [0]
   }
 }
+
+export const defaultTempProfile = {
+  replaceParam: {
+    customTitle: []
+  },
+  regArray: {
+    dirMatch: []
+  }
+}
+
+export const customKey = [
+  ...Object.keys(defaultTempProfile.regArray),
+  ...Object.keys(defaultTempProfile.replaceParam)
+]
 
 export const rewriteSelection: RewriteCase[] = []
 

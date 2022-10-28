@@ -1,9 +1,15 @@
 import type { ISection } from "~/typings"
 import type { UITableView, UIWindow, UITableViewController } from "marginnote"
-import type { IDocProfile, IGlobalProfile, INotebookProfile } from "./profile"
+import type {
+  IDocProfile,
+  IGlobalProfile,
+  INotebookProfile,
+  ITempProfile
+} from "./profile"
 
 declare global {
   const dev: typeof import("marginnote")["dev"]
+  const MN: typeof import("marginnote")["MN"]
   const self: {
     addon?: {
       key: string
@@ -27,6 +33,7 @@ declare global {
     tableView: UITableView
     docProfile: IDocProfile
     globalProfile: IGlobalProfile
+    tempProfile: ITempProfile
     notebookProfile: INotebookProfile
     dataSource: ISection[]
     allGlobalProfile: IGlobalProfile[]

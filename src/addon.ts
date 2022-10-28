@@ -1,6 +1,7 @@
 import mainfest from "../mainfest"
 import { MN } from "marginnote"
 import type { SQLiteDatabase } from "marginnote"
+import { ReturnedData } from "./modules/zotero/typings"
 
 class MNADDON {
   path!: string
@@ -19,7 +20,7 @@ class MNADDON {
   doc = MN.isZH ? mainfest.docZH : mainfest.doc
   zoteroDB?: SQLiteDatabase
   lastVersion!: string
-  zoteroVersion!: number
+  tempReturnedData?: ReturnedData[]
 }
 
 export const Addon = new MNADDON()

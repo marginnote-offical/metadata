@@ -1,4 +1,4 @@
-export interface ReturnData {
+export interface ReturnedData {
   key: string
   version: number
   links: {

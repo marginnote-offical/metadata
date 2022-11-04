@@ -53,7 +53,7 @@ export default defineConfig({
       key: "addURL",
       type: CellViewType.Switch,
       label: "添加 MN 回链",
-      help: "导入后将 Zotero URL 字段设置为当前文档的 MN 链接（笔记链接代替），仅笔记本模式下可用。    "
+      help: "成功导入后自动在 Zotero 中添加一个 MN 笔记本链接的附件"
     },
     {
       key: "customTitle",

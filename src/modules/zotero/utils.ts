@@ -2,7 +2,6 @@ import {
   confirm,
   fetch,
   HUDController,
-  MbBookNote,
   openUrl,
   selectIndex,
   showHUD,
@@ -44,28 +43,28 @@ export async function fetchItemByTitle(title: string) {
     const { temp } = self.globalProfile.additional
     if (!Addon.tempReturnedData && temp)
       Addon.tempReturnedData = JSON.parse(temp)
-    if (Addon.tempReturnedData)
-      return Addon.tempReturnedData.filter(k => k.data.title.includes(title))
-    else {
+    if (Addon.tempReturnedData) {
+      const t = Addon.tempReturnedData.filter(k => k.data.title.includes(title))
+      if (t.length) return t
+    } else {
       const res = await fetchAll()
-      if (res) return res.filter(k => k.data.title.includes(title))
+      const t = res?.filter(k => k.data.title.includes(title))
+      if (t?.length) return t
     }
-  } else {
-    const res = await fetch(`https://api.zotero.org/users/${userID}/items`, {
-      method: "GET",
-      headers: {
-        "Zotero-API-Key": APIKey,
-        "Zotero-API-Version": "3"
-      },
-      search: {
-        q: title,
-        itemType: "-attachment"
-      }
-    }).then(res => res.json())
-
-    return res as ReturnedData[]
   }
-  return []
+  const res = await fetch(`https://api.zotero.org/users/${userID}/items`, {
+    method: "GET",
+    headers: {
+      "Zotero-API-Key": APIKey,
+      "Zotero-API-Version": "3"
+    },
+    search: {
+      q: title,
+      itemType: "-attachment"
+    }
+  }).then(res => res.json())
+
+  return res as ReturnedData[]
 }
 
 export async function fetchItemByKey(key: string) {
